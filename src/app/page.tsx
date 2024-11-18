@@ -6,7 +6,7 @@ import SiteList from '@/components/SiteList';
 const Map = dynamic(() => import('@/components/Map'), {
   ssr: false,
   loading: () => (
-    <div className="h-[60vh] w-full rounded-lg bg-gray-100 animate-pulse" />
+    <div className="h-[400px] w-full rounded-lg bg-gray-100 animate-pulse" />
   ),
 });
 

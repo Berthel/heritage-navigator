@@ -59,7 +59,7 @@ export default function Map({
   console.log('Rendering map with center:', center);
 
   return (
-    <div className="w-full h-[600px]">
+    <div className="w-full h-[400px]">
       <MapContainer
         center={center}
         zoom={zoom}
