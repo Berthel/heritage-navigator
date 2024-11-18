@@ -10,7 +10,7 @@ import SiteList from './SiteList';
 const MapComponent = dynamic(() => import('@/components/Map'), {
   ssr: false,
   loading: () => (
-    <div className="h-full w-full rounded-lg bg-gray-100 animate-pulse" />
+    <div className="h-full w-full bg-gray-100 animate-pulse" />
   ),
 });
 
@@ -19,8 +19,6 @@ interface MobileLayoutProps {
 }
 
 export default function MobileLayout({ sites }: MobileLayoutProps) {
-  const [view, setView] = useState<'map' | 'list'>('map');
-  const [expanded, setExpanded] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<'da' | 'en' | 'pt'>('da');
   
   return (
@@ -48,49 +46,26 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 mt-14 mb-16">
-        {view === 'map' ? (
-          <div className={`${expanded ? 'h-full' : 'h-3/5'} relative`}>
-            <MapComponent sites={sites} />
-            <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-              <button 
-                className="p-2 bg-white rounded-full shadow-lg"
-                onClick={() => setExpanded(!expanded)}
-              >
-                <ChevronUp 
-                  size={24} 
-                  className={`transform transition-transform ${expanded ? 'rotate-180' : ''}`}
-                />
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="h-full overflow-y-auto">
-            <SiteList sites={sites} selectedLanguage={selectedLanguage} />
-          </div>
-        )}
+      <main className="flex-1 mt-14 mb-16 fixed inset-0 pt-14 pb-16">
+        {/* Map View - Fixed 60% height */}
+        <div className="h-[60%] w-full">
+          <MapComponent sites={sites} />
+        </div>
 
-        {!expanded && view === 'map' && (
-          <div className="h-2/5 bg-white overflow-y-auto">
-            <SiteList sites={sites} selectedLanguage={selectedLanguage} />
-          </div>
-        )}
+        {/* List View - Fixed 40% height */}
+        <div className="h-[40%] bg-white overflow-y-auto">
+          <SiteList sites={sites} selectedLanguage={selectedLanguage} />
+        </div>
       </main>
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 w-full bg-white border-t px-4 py-2">
         <div className="flex justify-around items-center">
-          <button 
-            className={`p-2 flex flex-col items-center ${view === 'map' ? 'text-blue-600' : ''}`}
-            onClick={() => setView('map')}
-          >
+          <button className="p-2 text-blue-600 flex flex-col items-center">
             <Map size={24} />
             <span className="text-xs">Kort</span>
           </button>
-          <button 
-            className={`p-2 flex flex-col items-center ${view === 'list' ? 'text-blue-600' : ''}`}
-            onClick={() => setView('list')}
-          >
+          <button className="p-2 flex flex-col items-center">
             <List size={24} />
             <span className="text-xs">Liste</span>
           </button>
