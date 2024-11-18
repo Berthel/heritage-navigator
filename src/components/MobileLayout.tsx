@@ -32,7 +32,7 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
       />
 
       {/* Main Content */}
-      <main className="flex-1 mt-18 mb-16">
+      <main className="flex-1 pt-[4.5rem] pb-16 relative">
         {view === 'map' ? (
           <>
             <div className={`${expanded ? 'h-full' : 'h-2/5'} relative`}>
