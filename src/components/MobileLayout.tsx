@@ -51,7 +51,7 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
       <main className="flex-1 mt-14 mb-16">
         {view === 'map' ? (
           <>
-            <div className={`${expanded ? 'h-full' : 'h-3/5'} relative`}>
+            <div className={`${expanded ? 'h-full' : 'h-2/5'} relative`}>
               <MapComponent sites={sites} />
               <div className="absolute bottom-4 right-4 flex flex-col gap-2">
                 <button 
@@ -67,7 +67,7 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
             </div>
 
             {!expanded && (
-              <div className="h-2/5 bg-white overflow-y-auto">
+              <div className="h-3/5 bg-white overflow-y-auto">
                 <SiteList sites={sites} selectedLanguage={selectedLanguage} />
               </div>
             )}
