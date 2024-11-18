@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Map, List, Clock, Heart, Settings, ChevronUp, Globe, Menu } from 'lucide-react';
+import { Map, List, Clock, Heart, Settings, ChevronUp } from 'lucide-react';
 import { HeritageSite } from '@/types/models';
 import dynamic from 'next/dynamic';
 import SiteList from './SiteList';
+import AppHeader from './AppHeader';
 
 // Dynamically import Map component to avoid SSR issues
 const MapComponent = dynamic(() => import('@/components/Map'), {
@@ -25,30 +26,13 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
   
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50">
-      {/* Header */}
-      <header className="px-4 py-3 bg-white shadow-sm fixed top-0 w-full z-50">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold">Historiske Steder i Tavira</h1>
-          <div className="flex gap-2">
-            <button 
-              className="p-2 rounded-full hover:bg-gray-100"
-              onClick={() => {
-                const nextLang = selectedLanguage === 'da' ? 'en' : selectedLanguage === 'en' ? 'pt' : 'da';
-                setSelectedLanguage(nextLang);
-              }}
-            >
-              <Globe size={20} />
-              <span className="ml-1 text-sm">{selectedLanguage.toUpperCase()}</span>
-            </button>
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <Menu size={20} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <AppHeader 
+        selectedLanguage={selectedLanguage}
+        onLanguageChange={setSelectedLanguage}
+      />
 
       {/* Main Content */}
-      <main className="flex-1 mt-14 mb-16">
+      <main className="flex-1 mt-16 mb-16">
         {view === 'map' ? (
           <>
             <div className={`${expanded ? 'h-full' : 'h-2/5'} relative`}>
