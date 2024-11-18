@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { HeritageSite, getLocalizedField } from '@/types/models';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useGeolocation } from '@/hooks/useGeolocation';
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -23,6 +24,10 @@ const Popup = dynamic(
   () => import('react-leaflet').then((mod) => mod.Popup),
   { ssr: false }
 );
+const Circle = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Circle),
+  { ssr: false }
+);
 
 interface MapProps {
   sites?: HeritageSite[];
@@ -32,9 +37,10 @@ interface MapProps {
 
 export default function Map({ 
   sites = [], 
-  center = [37.1283, -7.6506], // Tavira's coordinates
+  center = [37.1283, -7.6506], 
   zoom = 15 
 }: MapProps) {
+  const { coordinates, error, loading } = useGeolocation();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -56,12 +62,12 @@ export default function Map({
     return null;
   }
 
-  console.log('Rendering map with center:', center);
+  console.log('Rendering map with center:', coordinates || center);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
       <MapContainer
-        center={center}
+        center={coordinates || center}
         zoom={zoom}
         className="h-full w-full rounded-lg"
         scrollWheelZoom={false}
@@ -70,6 +76,13 @@ export default function Map({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        {coordinates && (
+          <Circle
+            center={coordinates}
+            radius={20}
+            pathOptions={{ color: '#2563EB', fillColor: '#3B82F6' }}
+          />
+        )}
         {sites.map((site) => (
           <Marker
             key={site.id}
@@ -84,6 +97,11 @@ export default function Map({
           </Marker>
         ))}
       </MapContainer>
+      {error && (
+        <div className="absolute bottom-4 left-4 bg-red-50 text-red-600 px-4 py-2 rounded-lg shadow">
+          {error}
+        </div>
+      )}
     </div>
   );
 }
