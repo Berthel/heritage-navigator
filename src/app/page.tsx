@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
-import { HeritageSite } from '@/types/models';
+import { mockSites } from '@/lib/mockData';
+import SiteList from '@/components/SiteList';
 
 // Dynamically import Map component to avoid SSR issues
 const Map = dynamic(() => import('@/components/Map'), {
@@ -9,55 +10,18 @@ const Map = dynamic(() => import('@/components/Map'), {
   ),
 });
 
-// Eksempel på seværdigheder (dette skal senere komme fra Supabase)
-const mockSites: HeritageSite[] = [
-  {
-    id: '1',
-    name: {
-      da: 'Tavira Slot',
-      en: 'Tavira Castle',
-      pt: 'Castelo de Tavira'
-    },
-    description: {
-      da: 'Historisk slot fra det 8. århundrede',
-      en: 'Historic castle from the 8th century',
-      pt: 'Castelo histórico do século VIII'
-    },
-    detailedInfo: {
-      da: undefined,
-      en: undefined,
-      pt: undefined
-    },
-    period: {
-      id: '1',
-      name: 'Medieval',
-      color: '#724B34'
-    },
-    location: {
-      latitude: 37.1275,
-      longitude: -7.6506,
-      address: 'Calçada D. Paio Peres Correia, Tavira'
-    },
-    openingHours: {
-      monday: '09:00-17:00',
-      tuesday: '09:00-17:00',
-      wednesday: '09:00-17:00',
-      thursday: '09:00-17:00',
-      friday: '09:00-17:00',
-      saturday: '09:00-17:00',
-      sunday: '09:00-17:00'
-    },
-    images: []
-  }
-];
-
 export default function Home() {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Heritage Navigator - Tavira</h1>
-      <div className="rounded-lg overflow-hidden shadow-lg">
-        <Map sites={mockSites} />
+    <main className="flex min-h-screen flex-col items-center p-4 md:p-8">
+      <h1 className="text-4xl font-bold mb-8">Historiske Steder i Tavira</h1>
+      <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="w-full">
+          <Map sites={mockSites} />
+        </div>
+        <div className="w-full">
+          <SiteList sites={mockSites} />
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
