@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Attraction } from '@/types';
+import { HeritageSite, getLocalizedField } from '@/types/models';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -25,13 +25,13 @@ const Popup = dynamic(
 );
 
 interface MapProps {
-  attractions?: Attraction[];
+  sites?: HeritageSite[];
   center?: [number, number];
   zoom?: number;
 }
 
 export default function Map({ 
-  attractions = [], 
+  sites = [], 
   center = [37.1283, -7.6506], // Tavira's coordinates
   zoom = 15 
 }: MapProps) {
@@ -70,15 +70,15 @@ export default function Map({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {attractions.map((attraction) => (
+        {sites.map((site) => (
           <Marker
-            key={attraction.id}
-            position={[attraction.coordinates.latitude, attraction.coordinates.longitude]}
+            key={site.id}
+            position={[site.location.latitude, site.location.longitude]}
           >
             <Popup>
               <div className="p-2">
-                <h3 className="font-bold">{attraction.name.da}</h3>
-                <p className="text-sm">{attraction.description.da}</p>
+                <h3 className="font-bold">{getLocalizedField(site.name, 'da')}</h3>
+                <p className="text-sm">{getLocalizedField(site.description, 'da')}</p>
               </div>
             </Popup>
           </Marker>

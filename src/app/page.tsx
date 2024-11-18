@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import { HeritageSite } from '@/types/models';
 
 // Dynamically import Map component to avoid SSR issues
 const Map = dynamic(() => import('@/components/Map'), {
@@ -9,7 +10,7 @@ const Map = dynamic(() => import('@/components/Map'), {
 });
 
 // Eksempel på seværdigheder (dette skal senere komme fra Supabase)
-const mockAttractions = [
+const mockSites: HeritageSite[] = [
   {
     id: '1',
     name: {
@@ -22,12 +23,21 @@ const mockAttractions = [
       en: 'Historic castle from the 8th century',
       pt: 'Castelo histórico do século VIII'
     },
-    historicalPeriod: 'Medieval',
-    coordinates: {
-      latitude: 37.1275,
-      longitude: -7.6506
+    detailedInfo: {
+      da: undefined,
+      en: undefined,
+      pt: undefined
     },
-    address: 'Calçada D. Paio Peres Correia, Tavira',
+    period: {
+      id: '1',
+      name: 'Medieval',
+      color: '#724B34'
+    },
+    location: {
+      latitude: 37.1275,
+      longitude: -7.6506,
+      address: 'Calçada D. Paio Peres Correia, Tavira'
+    },
     openingHours: {
       monday: '09:00-17:00',
       tuesday: '09:00-17:00',
@@ -46,7 +56,7 @@ export default function Home() {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Heritage Navigator - Tavira</h1>
       <div className="rounded-lg overflow-hidden shadow-lg">
-        <Map attractions={mockAttractions} />
+        <Map sites={mockSites} />
       </div>
     </div>
   );
