@@ -23,6 +23,7 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
   const [view, setView] = useState<'map' | 'list'>('map');
   const [expanded, setExpanded] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<'da' | 'en' | 'pt'>('da');
+  const [activeSiteId, setActiveSiteId] = useState<string | undefined>();
   
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50">
@@ -36,7 +37,7 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
         {view === 'map' ? (
           <>
             <div className={`${expanded ? 'h-full' : 'h-2/5'} relative`}>
-              <MapComponent sites={sites} />
+              <MapComponent sites={sites} activeSiteId={activeSiteId} />
               <div className="absolute bottom-4 right-4 flex flex-col gap-2">
                 <button 
                   className="p-2 bg-white rounded-full shadow-lg"
@@ -52,13 +53,28 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
 
             {!expanded && (
               <div className="h-3/5 bg-white overflow-y-auto">
-                <SiteList sites={sites} selectedLanguage={selectedLanguage} />
+                <SiteList 
+                  sites={sites} 
+                  selectedLanguage={selectedLanguage} 
+                  onSiteSelect={(siteId) => {
+                    setActiveSiteId(siteId);
+                    setExpanded(false);
+                  }}
+                />
               </div>
             )}
           </>
         ) : (
           <div className="h-full overflow-y-auto">
-            <SiteList sites={sites} selectedLanguage={selectedLanguage} />
+            <SiteList 
+              sites={sites} 
+              selectedLanguage={selectedLanguage}
+              onSiteSelect={(siteId) => {
+                setActiveSiteId(siteId);
+                setView('map');
+                setExpanded(false);
+              }}
+            />
           </div>
         )}
       </main>

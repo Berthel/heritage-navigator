@@ -34,6 +34,7 @@ interface MapProps {
   sites?: HeritageSite[];
   center?: [number, number];
   zoom?: number;
+  activeSiteId?: string;
 }
 
 // Center Control Component
@@ -88,7 +89,8 @@ function CenterControl({ coordinates }: { coordinates: [number, number] | null }
 export default function Map({ 
   sites = [], 
   center = [37.1283, -7.6506], 
-  zoom = 15 
+  zoom = 15,
+  activeSiteId
 }: MapProps) {
   const { coordinates, error, loading } = useGeolocation();
   const [mounted, setMounted] = useState(false);
@@ -99,6 +101,28 @@ export default function Map({
     
     // Fix for default markers in Leaflet
     delete (L.Icon.Default.prototype as any)._getIconUrl;
+
+    // Definer både blå og grønne ikoner
+    const blueIcon = L.icon({
+      iconRetinaUrl: '/marker-icon-2x.png',
+      iconUrl: '/marker-icon.png',
+      shadowUrl: '/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+    const greenIcon = L.icon({
+      iconRetinaUrl: '/marker-icon-2x-green.png',
+      iconUrl: '/marker-icon-green.png',
+      shadowUrl: '/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: '/marker-icon-2x.png',
       iconUrl: '/marker-icon.png',
@@ -143,6 +167,27 @@ export default function Map({
           <Marker
             key={site.id}
             position={[site.location.latitude, site.location.longitude]}
+            icon={
+              site.id === activeSiteId
+                ? L.icon({
+                    iconRetinaUrl: '/marker-icon-2x-green.png',
+                    iconUrl: '/marker-icon-green.png',
+                    shadowUrl: '/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                  })
+                : L.icon({
+                    iconRetinaUrl: '/marker-icon-2x.png',
+                    iconUrl: '/marker-icon.png',
+                    shadowUrl: '/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                  })
+            }
           >
             <Popup>
               <div className="p-2">
