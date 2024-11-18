@@ -6,6 +6,7 @@ import { HeritageSite, getLocalizedField } from '@/types/models';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useGeolocation } from '@/hooks/useGeolocation';
+import { MapContainer as LeafletMapContainer, useMap } from 'react-leaflet';
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -33,6 +34,55 @@ interface MapProps {
   sites?: HeritageSite[];
   center?: [number, number];
   zoom?: number;
+}
+
+// Center Control Component
+function CenterControl({ coordinates }: { coordinates: [number, number] | null }) {
+  const map = useMap();
+  const TAVIRA_CENTER: [number, number] = [37.1283, -7.6506];
+  const [isUserLocation, setIsUserLocation] = useState(false);
+
+  const toggleCenter = () => {
+    if (coordinates) {
+      const newCenter = isUserLocation ? TAVIRA_CENTER : coordinates;
+      map.flyTo(newCenter, map.getZoom(), {
+        duration: 1.5 // Animation duration in seconds
+      });
+      setIsUserLocation(!isUserLocation);
+    }
+  };
+
+  return coordinates ? (
+    <div className="leaflet-top leaflet-right">
+      <div className="leaflet-control leaflet-bar">
+        <button
+          onClick={toggleCenter}
+          className="bg-white p-2 shadow-md rounded-lg m-2 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          title={isUserLocation ? "Vis Tavira centrum" : "Vis min position"}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  ) : null;
 }
 
 export default function Map({ 
@@ -76,11 +126,17 @@ export default function Map({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <CenterControl coordinates={coordinates} />
         {coordinates && (
           <Circle
             center={coordinates}
             radius={20}
-            pathOptions={{ color: '#2563EB', fillColor: '#3B82F6' }}
+            pathOptions={{ 
+              color: '#22C55E',         // Grøn kant
+              fillColor: '#86EFAC',     // Lysere grøn fyld
+              weight: 2,                // Tykkere kant
+              fillOpacity: 0.6          // Semi-transparent fyld
+            }}
           />
         )}
         {sites.map((site) => (
