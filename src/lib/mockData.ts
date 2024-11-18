@@ -24,8 +24,8 @@ export const mockSites: HeritageSite[] = [
       color: '#724B34'
     },
     location: {
-      latitude: 37.1275,
-      longitude: -7.6506,
+      latitude: 37.12548631187557,
+      longitude: -7.651247332301158,
       address: 'Calçada D. Paio Peres Correia, Tavira'
     },
     openingHours: {
@@ -65,8 +65,8 @@ export const mockSites: HeritageSite[] = [
       color: '#4B4B4B'
     },
     location: {
-      latitude: 37.1273,
-      longitude: -7.6504,
+      latitude: 37.12536221217024,
+      longitude: -7.651937103464756,
       address: 'Largo de Santa Maria, Tavira'
     },
     openingHours: {
@@ -106,8 +106,8 @@ export const mockSites: HeritageSite[] = [
       color: '#8B4513'
     },
     location: {
-      latitude: 37.1259,
-      longitude: -7.6502,
+      latitude: 37.12699915416825,
+      longitude: -7.649895603464685,
       address: 'Ponte Romana, Tavira'
     },
     openingHours: {

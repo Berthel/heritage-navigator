@@ -7,6 +7,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { MapContainer as LeafletMapContainer, useMap } from 'react-leaflet';
+import { MapPin, Crosshair } from 'lucide-react';
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -61,25 +62,11 @@ function CenterControl({ coordinates }: { coordinates: [number, number] | null }
           className="bg-white p-2 shadow-md rounded-lg m-2 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
           title={isUserLocation ? "Vis Tavira centrum" : "Vis min position"}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-            />
-          </svg>
+          {isUserLocation ? (
+            <MapPin className="w-6 h-6" />
+          ) : (
+            <Crosshair className="w-6 h-6" />
+          )}
         </button>
       </div>
     </div>
