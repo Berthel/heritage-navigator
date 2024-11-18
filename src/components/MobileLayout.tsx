@@ -6,6 +6,7 @@ import { HeritageSite } from '@/types/models';
 import dynamic from 'next/dynamic';
 import SiteList from './SiteList';
 import AppHeader from './AppHeader';
+import { useFavorites } from '@/hooks/useFavorites';
 
 // Dynamically import Map component to avoid SSR issues
 const MapComponent = dynamic(() => import('@/components/Map'), {
@@ -24,6 +25,13 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
   const [expanded, setExpanded] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<'da' | 'en' | 'pt'>('da');
   const [activeSiteId, setActiveSiteId] = useState<string | undefined>();
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+
+  // Filtrer sites baseret på favorit-filter
+  const filteredSites = showOnlyFavorites 
+    ? sites.filter(site => isFavorite(site.id))
+    : sites;
   
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50">
@@ -54,12 +62,14 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
             {!expanded && (
               <div className="h-3/5 bg-white overflow-y-auto">
                 <SiteList 
-                  sites={sites} 
+                  sites={filteredSites} 
                   selectedLanguage={selectedLanguage} 
                   onSiteSelect={(siteId) => {
                     setActiveSiteId(siteId);
                     setExpanded(false);
                   }}
+                  onFavorite={toggleFavorite}
+                  isFavorite={isFavorite}
                 />
               </div>
             )}
@@ -67,13 +77,15 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
         ) : (
           <div className="h-full overflow-y-auto">
             <SiteList 
-              sites={sites} 
+              sites={filteredSites}
               selectedLanguage={selectedLanguage}
               onSiteSelect={(siteId) => {
                 setActiveSiteId(siteId);
                 setView('map');
                 setExpanded(false);
               }}
+              onFavorite={toggleFavorite}
+              isFavorite={isFavorite}
             />
           </div>
         )}
@@ -96,13 +108,16 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
             <List size={24} />
             <span className="text-xs">Liste</span>
           </button>
+          <button 
+            className={`p-2 flex flex-col items-center ${showOnlyFavorites ? 'text-red-500' : ''}`}
+            onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+          >
+            <Heart size={24} fill={showOnlyFavorites ? 'currentColor' : 'none'} />
+            <span className="text-xs">Favoritter</span>
+          </button>
           <button className="p-2 flex flex-col items-center">
             <Clock size={24} />
             <span className="text-xs">Perioder</span>
-          </button>
-          <button className="p-2 flex flex-col items-center">
-            <Heart size={24} />
-            <span className="text-xs">Favoritter</span>
           </button>
           <button className="p-2 flex flex-col items-center">
             <Settings size={24} />

@@ -8,6 +8,7 @@ interface SiteCardProps {
   onFavorite?: (siteId: string) => void;
   onShowOnMap?: (siteId: string) => void;
   onReadMore?: (siteId: string) => void;
+  isFavorite?: boolean;
 }
 
 const SiteCard: React.FC<SiteCardProps> = ({
@@ -15,7 +16,8 @@ const SiteCard: React.FC<SiteCardProps> = ({
   selectedLanguage,
   onFavorite,
   onShowOnMap,
-  onReadMore
+  onReadMore,
+  isFavorite = false
 }) => {
   return (
     <div className="bg-white rounded-lg border p-4 mb-3">
@@ -35,9 +37,12 @@ const SiteCard: React.FC<SiteCardProps> = ({
             </h3>
             <button 
               onClick={() => onFavorite?.(site.id)}
-              className="p-2 rounded-full hover:bg-gray-100 text-gray-400"
+              className={`p-2 rounded-full hover:bg-gray-100 ${
+                isFavorite ? 'text-red-500' : 'text-gray-400'
+              }`}
+              aria-label={isFavorite ? 'Fjern fra favoritter' : 'Tilføj til favoritter'}
             >
-              <Heart size={20} />
+              <Heart size={20} fill={isFavorite ? 'currentColor' : 'none'} />
             </button>
           </div>
 
