@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import SiteList from './SiteList';
 import AppHeader from './AppHeader';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useGeolocation } from '@/hooks/useGeolocation';
 import PeriodFilter from './PeriodFilter';
 import FilteredLayout from './FilteredLayout';
 
@@ -31,6 +32,7 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
   const [showPeriodFilter, setShowPeriodFilter] = useState(false);
   const [selectedPeriodId, setSelectedPeriodId] = useState<string | null>(null);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const { coordinates } = useGeolocation();
 
   // Udtræk unikke perioder fra sites
   const periods = useMemo(() => {
@@ -59,6 +61,13 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
       return matchesFavorites && matchesPeriod;
     });
   }, [sites, showOnlyFavorites, isFavorite, selectedPeriodId]);
+
+  // Håndter når en bruger vælger at se et site på kortet
+  const handleSiteSelect = (siteId: string) => {
+    setActiveSiteId(siteId);
+    setView('map');
+    setExpanded(false);
+  };
 
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50">
@@ -100,12 +109,10 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
                   <SiteList 
                     sites={filteredSites} 
                     selectedLanguage={selectedLanguage} 
-                    onSiteSelect={(siteId) => {
-                      setActiveSiteId(siteId);
-                      setExpanded(false);
-                    }}
+                    onSiteSelect={handleSiteSelect}
                     onFavorite={toggleFavorite}
                     isFavorite={isFavorite}
+                    userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
                   />
                 </div>
               )}
@@ -114,9 +121,10 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
             <SiteList 
               sites={filteredSites}
               selectedLanguage={selectedLanguage}
-              onSiteSelect={setActiveSiteId}
+              onSiteSelect={handleSiteSelect}
               onFavorite={toggleFavorite}
               isFavorite={isFavorite}
+              userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
             />
           )}
         </FilteredLayout>

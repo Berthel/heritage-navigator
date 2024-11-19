@@ -1,6 +1,7 @@
 import React from 'react';
-import { Heart, MapPin, ChevronRight, Clock } from 'lucide-react';
+import { Heart, MapPin, ChevronRight, Clock, Navigation2 } from 'lucide-react';
 import { HeritageSite, getLocalizedField, isOpenNow } from '@/types/models';
+import { calculateDistance, formatDistance } from '@/lib/distance';
 
 interface SiteCardProps {
   site: HeritageSite;
@@ -9,6 +10,7 @@ interface SiteCardProps {
   onShowOnMap?: (siteId: string) => void;
   onReadMore?: (siteId: string) => void;
   isFavorite?: boolean;
+  userLocation?: { latitude: number; longitude: number } | null;
 }
 
 const SiteCard: React.FC<SiteCardProps> = ({
@@ -17,10 +19,36 @@ const SiteCard: React.FC<SiteCardProps> = ({
   onFavorite,
   onShowOnMap,
   onReadMore,
-  isFavorite = false
+  isFavorite = false,
+  userLocation
 }) => {
   const primaryPeriod = site.periods.find(p => p.id === site.primaryPeriod);
   const isOpen = isOpenNow(site.openingHours);
+
+  const handleShowOnMap = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onShowOnMap?.(site.id);
+  };
+
+  const handleReadMore = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onReadMore?.(site.id);
+  };
+
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onFavorite?.(site.id);
+  };
+
+  const distance = userLocation ? calculateDistance(
+    userLocation.latitude,
+    userLocation.longitude,
+    site.location.latitude,
+    site.location.longitude
+  ) : null;
 
   return (
     <div className="bg-white rounded-lg border p-4 mb-3">
@@ -53,10 +81,16 @@ const SiteCard: React.FC<SiteCardProps> = ({
                     {isOpen ? 'Åben nu' : 'Lukket'}
                   </span>
                 )}
+                {distance !== null && (
+                  <span className="text-blue-500 flex items-center gap-1">
+                    <Navigation2 size={14} />
+                    {formatDistance(distance)}
+                  </span>
+                )}
               </div>
             </div>
             <button 
-              onClick={() => onFavorite?.(site.id)}
+              onClick={handleFavorite}
               className={`p-2 rounded-full hover:bg-gray-100 ${
                 isFavorite ? 'text-red-500' : 'text-gray-400'
               }`}
@@ -88,7 +122,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
           {/* Action buttons */}
           <div className="flex justify-between items-center">
             <button 
-              onClick={() => onShowOnMap?.(site.id)}
+              onClick={handleShowOnMap}
               className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm bg-gray-100 text-gray-600 hover:bg-gray-200"
             >
               <MapPin size={16} />
@@ -96,7 +130,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
             </button>
             <button 
               className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
-              onClick={() => onReadMore?.(site.id)}
+              onClick={handleReadMore}
             >
               <span className="text-sm">Læs mere</span>
               <ChevronRight size={16} />

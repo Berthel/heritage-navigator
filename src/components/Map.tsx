@@ -115,15 +115,28 @@ export default function Map({
           const primaryPeriod = site.periods.find(p => p.id === site.primaryPeriod);
           if (!primaryPeriod) return null;
 
+          const isActive = site.id === activeSiteId;
+          const markerSize = isActive ? 20 : 12;
+          const markerColor = isActive ? '#4CAF50' : primaryPeriod.color;
+          const borderWidth = isActive ? 3 : 2;
+
           return (
             <Marker
               key={site.id}
               position={[site.location.latitude, site.location.longitude]}
               icon={L.divIcon({
                 className: 'custom-div-icon',
-                html: `<div style="background-color: ${primaryPeriod.color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.3);"></div>`,
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
+                html: `<div style="
+                  background-color: ${markerColor}; 
+                  width: ${markerSize}px; 
+                  height: ${markerSize}px; 
+                  border-radius: 50%; 
+                  border: ${borderWidth}px solid white; 
+                  box-shadow: 0 0 6px rgba(0,0,0,0.4);
+                  transition: all 0.3s ease;
+                "></div>`,
+                iconSize: [markerSize, markerSize],
+                iconAnchor: [markerSize/2, markerSize/2]
               })}
             >
               <Popup>

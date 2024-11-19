@@ -8,6 +8,7 @@ interface SiteListProps {
   onFavorite: (siteId: string) => void;
   isFavorite: (siteId: string) => boolean;
   showOnlyFavorites?: boolean;
+  userLocation?: { latitude: number; longitude: number } | null;
 }
 
 export default function SiteList({ 
@@ -16,7 +17,8 @@ export default function SiteList({
   onSiteSelect,
   onFavorite,
   isFavorite,
-  showOnlyFavorites = false
+  showOnlyFavorites = false,
+  userLocation
 }: SiteListProps) {
   const filteredSites = showOnlyFavorites 
     ? sites.filter(site => isFavorite(site.id))
@@ -34,6 +36,7 @@ export default function SiteList({
             onReadMore={() => onSiteSelect?.(site.id)}
             onFavorite={onFavorite}
             isFavorite={isFavorite(site.id)}
+            userLocation={userLocation}
           />
         ))}
       </div>
