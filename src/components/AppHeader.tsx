@@ -4,7 +4,7 @@ import { Menu } from 'lucide-react';
 
 interface AppHeaderProps {
   selectedLanguage: 'da' | 'en' | 'pt';
-  onLanguageChange: (lang: 'da' | 'en' | 'pt') => void;
+  onLanguageChange: (language: 'da' | 'en' | 'pt') => void;
 }
 
 export default function AppHeader({ selectedLanguage, onLanguageChange }: AppHeaderProps) {

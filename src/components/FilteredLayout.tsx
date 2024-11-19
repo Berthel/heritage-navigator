@@ -5,7 +5,7 @@ import SiteList from './SiteList';
 interface FilteredLayoutProps {
   selectedPeriod: Period | null;
   sites: HeritageSite[];
-  selectedLanguage: string;
+  selectedLanguage: 'da' | 'en' | 'pt';
   onClearFilter: () => void;
   onSiteSelect?: (siteId: string) => void;
   onFavorite?: (siteId: string) => void;

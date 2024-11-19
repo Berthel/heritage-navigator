@@ -21,12 +21,17 @@ const MapComponent = dynamic(() => import('@/components/Map'), {
 
 interface MobileLayoutProps {
   sites: HeritageSite[];
+  selectedLanguage: 'da' | 'en' | 'pt';
+  onLanguageChange: (language: 'da' | 'en' | 'pt') => void;
 }
 
-export default function MobileLayout({ sites }: MobileLayoutProps) {
+export default function MobileLayout({ 
+  sites, 
+  selectedLanguage,
+  onLanguageChange 
+}: MobileLayoutProps) {
   const [view, setView] = useState<'map' | 'list'>('map');
   const [expanded, setExpanded] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('da');
   const [activeSiteId, setActiveSiteId] = useState<string | undefined>();
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [showPeriodFilter, setShowPeriodFilter] = useState(false);
@@ -73,7 +78,7 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
     <div className="h-screen w-full flex flex-col bg-gray-50">
       <AppHeader 
         selectedLanguage={selectedLanguage}
-        onLanguageChange={setSelectedLanguage}
+        onLanguageChange={onLanguageChange}
       />
 
       {/* Main Content */}
