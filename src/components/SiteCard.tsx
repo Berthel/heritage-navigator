@@ -2,6 +2,7 @@ import React from 'react';
 import { Heart, MapPin, ChevronRight, Clock, Navigation2 } from 'lucide-react';
 import { HeritageSite, getLocalizedField, isOpenNow } from '@/types/models';
 import { calculateDistance, formatDistance } from '@/lib/distance';
+import { useRouter } from 'next/navigation';
 
 interface SiteCardProps {
   site: HeritageSite;
@@ -22,6 +23,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
   isFavorite = false,
   userLocation
 }) => {
+  const router = useRouter();
   const primaryPeriod = site.periods.find(p => p.id === site.primaryPeriod);
   const isOpen = isOpenNow(site.openingHours);
 
@@ -34,7 +36,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
   const handleReadMore = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onReadMore?.(site.id);
+    router.push(`/site/${site.id}`);
   };
 
   const handleFavorite = (e: React.MouseEvent) => {
