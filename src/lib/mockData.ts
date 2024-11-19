@@ -190,7 +190,11 @@ export const mockSites: HeritageSite[] = [
       sections: [
         {
           type: 'text',
-          content: 'Tavira Castle was built in the 13th century...'
+          content: {
+            da: 'Tavira Slot blev bygget i 1200-tallet af de mauriske indbyggere. Efter den kristne reconquista blev slottet ombygget og tjente som kongelig residens. Fra toppen af slottet har man en enestående panoramaudsigt over Taviras historiske centrum, floden Gilão og helt ud til Atlanterhavet.',
+            en: 'Tavira Castle was built in the 13th century by the Moorish inhabitants. After the Christian reconquista, the castle was rebuilt and served as a royal residence. From the top of the castle, there is an outstanding panoramic view of Tavira\'s historic center, the Gilão river, and all the way to the Atlantic Ocean.',
+            pt: 'O Castelo de Tavira foi construído no século XIII pelos habitantes mouros. Após a reconquista cristã, o castelo foi reconstruído e serviu como residência real. Do topo do castelo, há uma vista panorâmica excepcional do centro histórico de Tavira, do rio Gilão e até ao Oceano Atlântico.'
+          }
         },
         {
           type: 'image',
@@ -239,7 +243,11 @@ export const mockSites: HeritageSite[] = [
       sections: [
         {
           type: 'text',
-          content: 'The Roman bridge was built in...'
+          content: {
+            da: 'Den Romerske Bro er et af Taviras mest ikoniske vartegn. Selvom den nuværende bro faktisk stammer fra middelalderen, er den bygget på fundamentet af en oprindelig romersk bro fra det 3. århundrede. Broen har syv buer og forbinder byens to halvdele over floden Gilão. Den har gennem århundreder været vital for byens handel og udvikling, og er stadig i dag en vigtig del af byens infrastruktur og kulturarv.',
+            en: 'The Roman Bridge is one of Tavira\'s most iconic landmarks. Although the current bridge actually dates from medieval times, it is built on the foundation of an original Roman bridge from the 3rd century. The bridge has seven arches and connects the two halves of the city across the Gilão River. It has been vital to the city\'s trade and development for centuries and remains an important part of the city\'s infrastructure and cultural heritage today.',
+            pt: 'A Ponte Romana é um dos marcos mais icônicos de Tavira. Embora a ponte atual date da época medieval, foi construída sobre a fundação de uma ponte romana original do século III. A ponte tem sete arcos e conecta as duas metades da cidade através do Rio Gilão. Foi vital para o comércio e desenvolvimento da cidade durante séculos e continua sendo uma parte importante da infraestrutura e do patrimônio cultural da cidade hoje.'
+          }
         },
         {
           type: 'image',
@@ -297,7 +305,11 @@ export const mockSites: HeritageSite[] = [
       sections: [
         {
           type: 'text',
-          content: 'The Islamic Museum houses a remarkable collection showcasing the Islamic period of Tavira...'
+          content: {
+            da: 'Det Islamiske Museum er indrettet i en restaureret bygning fra den mauriske periode. Museet huser en omfattende samling af islamiske artefakter og kunstværker fra den tid, hvor Tavira var under maurisk herredømme (711-1249). Særligt bemærkelsesværdige er samlingerne af keramik, mønter og arkitektoniske elementer, der vidner om byens rige islamiske arv. Museet tilbyder også interaktive udstillinger og regelmæssige særudstillinger om islamisk kultur og historie.',
+            en: 'The Islamic Museum is housed in a restored building from the Moorish period. The museum contains an extensive collection of Islamic artifacts and artworks from the time when Tavira was under Moorish rule (711-1249). Particularly noteworthy are the collections of ceramics, coins, and architectural elements that testify to the city\'s rich Islamic heritage. The museum also offers interactive exhibitions and regular special exhibitions on Islamic culture and history.',
+            pt: 'O Museu Islâmico está instalado num edifício restaurado do período mourisco. O museu contém uma extensa coleção de artefatos e obras de arte islâmicas da época em que Tavira estava sob domínio mourisco (711-1249). Particularmente notáveis são as coleções de cerâmica, moedas e elementos arquitetônicos que testemunham o rico patrimônio islâmico da cidade. O museu também oferece exposições interativas e exposições especiais regulares sobre cultura e história islâmica.'
+          }
         },
         {
           type: 'image',
