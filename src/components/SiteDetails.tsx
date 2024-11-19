@@ -45,12 +45,14 @@ export default function SiteDetails({ site }: SiteDetailsProps) {
       <main className="flex-1 overflow-auto pt-[72px]">
         <div className="relative">
           {mainImage && (
-            <div className="w-full h-64 relative">
+            <div className="w-full relative aspect-video">
               <Image
                 src={mainImage.url}
                 alt={mainImage.alt[selectedLanguage]}
                 fill
                 className="object-cover"
+                sizes="100vw"
+                priority
               />
             </div>
           )}
