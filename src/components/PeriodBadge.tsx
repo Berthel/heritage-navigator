@@ -1,4 +1,4 @@
-import { Period } from "@/types/models";
+import { Period, getLocalizedField } from "@/types/models";
 
 interface PeriodBadgeProps {
   period: Period;
@@ -16,7 +16,7 @@ export const PeriodBadge = ({ period, selectedLanguage }: PeriodBadgeProps) => {
         color: period.color
       }}
     >
-      {period.name[selectedLanguage]}
+      {getLocalizedField(period.name, selectedLanguage)}
     </span>
   );
 };
