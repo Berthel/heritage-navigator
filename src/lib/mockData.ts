@@ -14,7 +14,9 @@ const mockPeriods: Period[] = [
       pt: 'O período romano em Tavira'
     },
     order: 1,
-    color: '#FF9800'
+    color: '#FF9800',
+    startYear: -27,  // 27 BC
+    endYear: 476     // AD 476
   },
   {
     id: 'islamic',
@@ -29,7 +31,9 @@ const mockPeriods: Period[] = [
       pt: 'O período islâmico em Tavira'
     },
     order: 2,
-    color: '#4CAF50'
+    color: '#4CAF50',
+    startYear: 711,  // AD 711
+    endYear: 1249   // AD 1249
   },
   {
     id: 'medieval',
@@ -44,7 +48,9 @@ const mockPeriods: Period[] = [
       pt: 'O período medieval em Tavira'
     },
     order: 3,
-    color: '#9C27B0'
+    color: '#9C27B0',
+    startYear: 1249,  // AD 1249
+    endYear: 1500    // AD 1500
   }
 ];
 

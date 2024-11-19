@@ -40,6 +40,8 @@ export interface Period {
   description: LocalizedField;
   order: number;
   color: string;
+  startYear?: number;  // Optional year (negative for BC)
+  endYear?: number;    // Optional year (negative for BC)
 }
 
 export interface Location {
