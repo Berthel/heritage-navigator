@@ -46,21 +46,32 @@ function CenterControl({ coordinates }: { coordinates: [number, number] | null }
   const [isUserLocation, setIsUserLocation] = useState(false);
 
   const toggleCenter = () => {
-    if (coordinates) {
-      const newCenter = isUserLocation ? TAVIRA_CENTER : coordinates;
-      map.flyTo(newCenter, map.getZoom(), {
-        duration: 1.5 // Animation duration in seconds
+    if (coordinates && isUserLocation) {
+      // If we're showing user location and coordinates are available, switch to Tavira
+      map.flyTo(TAVIRA_CENTER, map.getZoom(), {
+        duration: 1.5
       });
-      setIsUserLocation(!isUserLocation);
+      setIsUserLocation(false);
+    } else if (coordinates) {
+      // If coordinates are available and we're showing Tavira, switch to user location
+      map.flyTo(coordinates, map.getZoom(), {
+        duration: 1.5
+      });
+      setIsUserLocation(true);
+    } else {
+      // If no coordinates available, center on Tavira
+      map.flyTo(TAVIRA_CENTER, map.getZoom(), {
+        duration: 1.5
+      });
     }
   };
 
-  return coordinates ? (
+  return (
     <div className="leaflet-top leaflet-right">
       <div className="leaflet-control leaflet-bar">
         <button
           onClick={toggleCenter}
-          className="bg-white p-2 shadow-md rounded-lg m-2 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          className={`bg-white p-2 shadow-md rounded-lg m-2 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${!coordinates ? 'opacity-50' : ''}`}
           title={isUserLocation ? "Vis Tavira centrum" : "Vis min position"}
         >
           {isUserLocation ? (
@@ -71,7 +82,7 @@ function CenterControl({ coordinates }: { coordinates: [number, number] | null }
         </button>
       </div>
     </div>
-  ) : null;
+  );
 }
 
 export default function Map({ 
@@ -165,15 +176,13 @@ export default function Map({
         })}
 
         {coordinates && (
-          <>
-            <Circle
-              center={coordinates}
-              radius={10}
-              pathOptions={{ color: '#4CAF50', fillColor: '#4CAF50' }}
-            />
-            <CenterControl coordinates={coordinates} />
-          </>
+          <Circle
+            center={coordinates}
+            radius={10}
+            pathOptions={{ color: '#4CAF50', fillColor: '#4CAF50' }}
+          />
         )}
+        <CenterControl coordinates={coordinates} />
       </MapContainer>
     </div>
   );

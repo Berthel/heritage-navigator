@@ -1,7 +1,12 @@
 // Basis types
 export interface LocalizedField {
-  [key: string]: string;  // Dynamisk sprog-understøttelse
+  da: string;
+  en: string;
+  pt: string;
 }
+
+// Definerer forskellige visningskontekster for billeder
+export type ImageContext = 'thumbnail' | 'gallery' | 'banner' | 'description';
 
 export interface Image {
   id: string;
@@ -12,55 +17,70 @@ export interface Image {
   year?: number;
   periodId?: string;
   order: number;
+  contexts: ImageContext[];  // Hvilke kontekster billedet kan bruges i
+  dimensions: {
+    width: number;
+    height: number;
+  };
+  thumbnailUrl?: string;    // Optimeret version til thumbnails
+  mediumUrl?: string;       // Mellemstørrelse til gallerier
+  largeUrl?: string;        // Fuld størrelse til modaler/lightbox
+}
+
+// Tilføj reference til billeder i detaljeret info
+export interface DetailSection {
+  type: 'text' | 'image' | 'gallery';
+  content: string | string[];  // Text eller image IDs
+  imageLayout?: 'left' | 'right' | 'full';  // For enkeltbilleder
 }
 
 export interface Period {
   id: string;
   name: LocalizedField;
-  description?: LocalizedField;
-  startYear?: number;
-  endYear?: number;
-  color: string;
+  description: LocalizedField;
   order: number;
-}
-
-export interface TimeSlot {
-  open: string;
-  close: string;
-}
-
-export interface OpeningHours {
-  weekday: number;  // 0-6
-  slots: TimeSlot[];
-  seasonal?: {
-    startDate?: string;
-    endDate?: string;
-  };
+  color: string;
 }
 
 export interface Location {
-  id: string;
   latitude: number;
   longitude: number;
-  address: LocalizedField;
+  address?: string;
   accessibility?: LocalizedField;
+}
+
+export interface TimeSlot {
+  dayOfWeek: number; // 0-6, hvor 0 er søndag
+  opens: string;     // Format: "HH:mm"
+  closes: string;    // Format: "HH:mm"
+}
+
+export interface OpeningHours {
+  type: 'regular' | 'seasonal' | 'special';
+  validFrom?: string;  // ISO date string
+  validTo?: string;    // ISO date string
+  slots: TimeSlot[];
 }
 
 export interface Tag {
   id: string;
   name: LocalizedField;
+  type?: string;
 }
 
-// Hovedmodel
 export interface HeritageSite {
   id: string;
   name: LocalizedField;
   description: LocalizedField;
-  detailedInfo: LocalizedField;
+  thumbnailImage: string;    // ID på hovedbilledet til kort visning
+  detailedInfo: {
+    sections: DetailSection[];  // Struktureret indhold med tekst og billeder
+    gallery?: string[];        // IDs på billeder til gallerivisning
+  };
   location: Location;
-  periods: Period[];  // Site kan tilhøre flere perioder
-  primaryPeriod: string;  // ID på hovedperioden
-  images: Image[];
+  periods: Period[];
+  primaryPeriod: string;
+  images: Image[];           // Alle tilgængelige billeder
   openingHours: OpeningHours[];
   tags: Tag[];
   status: 'active' | 'temporary_closed' | 'permanently_closed';
@@ -68,25 +88,59 @@ export interface HeritageSite {
 }
 
 // Hjælpefunktioner
-export type Language = string;  // Ændret fra 'da' | 'en' | 'pt' til string for dynamisk sprog
 
-export function getLocalizedField(field: LocalizedField, language: Language, fallbackLanguage: Language = 'en'): string {
-  return field[language] || field[fallbackLanguage] || '';
+export function getLocalizedField(field: LocalizedField | undefined, language: string): string {
+  if (!field) return '';
+  return field[language as keyof LocalizedField] || field.en || field.da || '';
+}
+
+// Hjælpefunktioner til billeder
+export function getImageForContext(images: Image[], imageId: string, context: ImageContext): string {
+  const image = images.find(img => img.id === imageId);
+  if (!image || !image.contexts.includes(context)) {
+    return ''; // eller default image url
+  }
+  
+  switch(context) {
+    case 'thumbnail':
+      return image.thumbnailUrl || image.url;
+    case 'gallery':
+      return image.mediumUrl || image.url;
+    case 'banner':
+    case 'description':
+      return image.largeUrl || image.url;
+  }
+}
+
+export function getGalleryImages(site: HeritageSite): Image[] {
+  return site.detailedInfo.gallery
+    ? site.detailedInfo.gallery
+        .map(id => site.images.find(img => img.id === id))
+        .filter((img): img is Image => img !== undefined)
+    : [];
 }
 
 export function isOpenNow(openingHours: OpeningHours[]): boolean {
   const now = new Date();
-  const currentWeekday = now.getDay();
-  const currentTime = now.toLocaleTimeString('en-US', { hour12: false });
+  const currentDay = now.getDay();
+  const currentTime = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
 
-  const todayHours = openingHours.filter(hours => hours.weekday === currentWeekday);
-  
-  if (!todayHours.length) return false;
+  // Find gældende åbningstider
+  const applicableHours = openingHours.find(hours => {
+    if (hours.type === 'regular') return true;
+    if (!hours.validFrom || !hours.validTo) return false;
 
-  return todayHours.some(hours => 
-    hours.slots.some(slot => {
-      // Check if current time is within any slot
-      return currentTime >= slot.open && currentTime <= slot.close;
-    })
-  );
+    const fromDate = new Date(hours.validFrom);
+    const toDate = new Date(hours.validTo);
+    return now >= fromDate && now <= toDate;
+  });
+
+  if (!applicableHours) return false;
+
+  // Check om stedet er åbent i det aktuelle tidsrum
+  return applicableHours.slots.some(slot => {
+    return slot.dayOfWeek === currentDay &&
+           currentTime >= slot.opens &&
+           currentTime <= slot.closes;
+  });
 }
