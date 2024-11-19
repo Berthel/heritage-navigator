@@ -87,6 +87,11 @@ export default function MobileLayout({
           selectedPeriod={selectedPeriod}
           selectedLanguage={selectedLanguage}
           onClearFilter={() => setSelectedPeriodId(null)}
+          sites={filteredSites}
+          onSiteSelect={handleSiteSelect}
+          onFavorite={toggleFavorite}
+          isFavorite={isFavorite}
+          userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
         >
           {view === 'map' ? (
             <>
