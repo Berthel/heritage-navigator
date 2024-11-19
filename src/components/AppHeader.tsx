@@ -1,6 +1,8 @@
 'use client';
 
 import { Menu } from 'lucide-react';
+import Image from 'next/image';
+import { colors } from '@/styles/theme';
 
 interface AppHeaderProps {
   selectedLanguage: 'da' | 'en' | 'pt';
@@ -9,15 +11,42 @@ interface AppHeaderProps {
 
 export default function AppHeader({ selectedLanguage, onLanguageChange }: AppHeaderProps) {
   return (
-    <header className="px-4 py-3 bg-white border-b border-gray-100 fixed top-0 w-full z-50">
+    <header 
+      className="px-4 py-3 fixed top-0 w-full z-50"
+      style={{ 
+        background: `linear-gradient(to bottom, ${colors.primary}, ${colors.primary}ee)`,
+        borderBottom: `1px solid ${colors.secondary}33`
+      }}
+    >
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-xl font-semibold">Heritage Navigator</h1>
-          <h2 className="text-sm text-gray-500">Tavira</h2>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 relative animate-pulse">
+            <Image
+              src="/heritage-compass.svg"
+              alt="Heritage Navigator Logo"
+              width={40}
+              height={40}
+              className="animate-spin-slow"
+              style={{ animationDuration: '10s' }}
+            />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold" style={{ color: colors.text.light }}>
+              Heritage Navigator
+            </h1>
+            <h2 className="text-sm" style={{ color: colors.secondary }}>
+              Tavira
+            </h2>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button 
-            className="rounded-full bg-gray-50 px-2 py-1 text-sm hover:bg-gray-100"
+            className="rounded-full px-3 py-1.5 text-sm border transition-colors duration-200"
+            style={{ 
+              borderColor: colors.secondary,
+              color: colors.text.light,
+              background: 'transparent',
+            }}
             onClick={() => {
               const nextLang = selectedLanguage === 'da' ? 'en' : selectedLanguage === 'en' ? 'pt' : 'da';
               onLanguageChange(nextLang);
@@ -25,8 +54,11 @@ export default function AppHeader({ selectedLanguage, onLanguageChange }: AppHea
           >
             {selectedLanguage.toUpperCase()}
           </button>
-          <button className="p-2 rounded-full hover:bg-gray-100">
-            <Menu size={20} className="text-gray-700" />
+          <button 
+            className="p-2 rounded-full transition-colors duration-200 hover:bg-white/10"
+            style={{ color: colors.text.light }}
+          >
+            <Menu size={24} />
           </button>
         </div>
       </div>

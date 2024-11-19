@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Baggrund -->
+  <circle cx="256" cy="256" r="256" fill="#1B365D"/>
+  
+  <!-- Kompas ydre ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#C4A484" stroke-width="12"/>
+  
+  <!-- Kompas indre cirkel -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#C4A484" stroke-width="8"/>
+  
+  <!-- Lokationsmarkør -->
+  <path d="M256 96 L296 216 L256 356 L216 216 Z" fill="#E6B17E"/>
+  
+  <!-- Kompas-retninger -->
+  <g fill="#C4A484" font-family="Arial" font-weight="bold">
+    <text x="256" y="80" text-anchor="middle" font-size="36">N</text>
+    <text x="440" y="267" text-anchor="middle" font-size="36">E</text>
+    <text x="256" y="454" text-anchor="middle" font-size="36">S</text>
+    <text x="72" y="267" text-anchor="middle" font-size="36">W</text>
+  </g>
+  
+  <!-- Kompaslinjer -->
+  <g stroke="#C4A484" stroke-width="4">
+    <!-- Hovedretninger -->
+    <line x1="256" y1="76" x2="256" y2="436" transform="rotate(0 256 256)"/>
+    <line x1="256" y1="76" x2="256" y2="436" transform="rotate(90 256 256)"/>
+    <!-- Mellemretninger -->
+    <line x1="256" y1="76" x2="256" y2="436" transform="rotate(45 256 256)" opacity="0.5"/>
+    <line x1="256" y1="76" x2="256" y2="436" transform="rotate(135 256 256)" opacity="0.5"/>
+  </g>
+</svg>

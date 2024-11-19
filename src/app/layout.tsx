@@ -9,13 +9,17 @@ export const metadata: Metadata = {
   title: 'Heritage Navigator - Tavira',
   description: 'Udforsk Taviras rige kulturarv',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/heritage-compass.svg',
+    apple: '/heritage-compass.svg',
+  },
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#ffffff',
+  themeColor: '#1B365D',
 };
 
 export default function RootLayout({
@@ -25,6 +29,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="da">
+      <head>
+        <link rel="icon" href="/heritage-compass.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/heritage-compass.svg" />
+      </head>
       <body className={inter.className}>
         <main className="min-h-screen bg-white dark:bg-gray-900">
           {children}

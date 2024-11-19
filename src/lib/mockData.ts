@@ -184,8 +184,8 @@ export const mockSites: HeritageSite[] = [
       gallery: ['castle1', 'roman-ruins1']
     },
     location: {
-      latitude: 37.1257,
-      longitude: -7.6505,
+      latitude: 37.125486311869814,
+      longitude: -7.6512044168311535,
       address: 'Calçada D. Paio Peres Correia, Tavira',
       accessibility: {
         da: 'Trapper og ujævnt terræn. Ikke egnet til kørestole.',
@@ -229,8 +229,8 @@ export const mockSites: HeritageSite[] = [
       gallery: ['roman-ruins1']
     },
     location: {
-      latitude: 37.1283,
-      longitude: -7.6506,
+      latitude: 37.12700770825847,
+      longitude: -7.649938518678061,
       address: 'Ponte Romana, Tavira',
       accessibility: {
         da: 'Let tilgængelig. Jævn overflade.',
@@ -291,8 +291,8 @@ export const mockSites: HeritageSite[] = [
       gallery: ['roman-ruins1']
     },
     location: {
-      latitude: 37.1267,
-      longitude: -7.6495,
+      latitude: 37.12602951058043,
+      longitude: -7.650243716831138,
       address: 'Rua da Galeria, Tavira',
       accessibility: {
         da: 'Fuldt tilgængelig med elevator og ramper',
