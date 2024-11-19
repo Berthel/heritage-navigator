@@ -7,7 +7,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { MapContainer as LeafletMapContainer, useMap } from 'react-leaflet';
-import { MapPin, Crosshair } from 'lucide-react';
+import { MapPin, Crosshair, Clock } from 'lucide-react';
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -36,6 +36,7 @@ interface MapProps {
   center?: [number, number];
   zoom?: number;
   activeSiteId?: string;
+  selectedLanguage: string;
 }
 
 // Center Control Component
@@ -77,119 +78,90 @@ export default function Map({
   sites = [], 
   center = [37.1283, -7.6506], 
   zoom = 15,
-  activeSiteId
+  activeSiteId,
+  selectedLanguage
 }: MapProps) {
   const { coordinates, error, loading } = useGeolocation();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    console.log('Map component mounting...');
     setMounted(true);
     
     // Fix for default markers in Leaflet
     delete (L.Icon.Default.prototype as any)._getIconUrl;
-
-    // Definer både blå og grønne ikoner
-    const blueIcon = L.icon({
-      iconRetinaUrl: '/marker-icon-2x.png',
-      iconUrl: '/marker-icon.png',
-      shadowUrl: '/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
-
-    const greenIcon = L.icon({
-      iconRetinaUrl: '/marker-icon-2x-green.png',
-      iconUrl: '/marker-icon-green.png',
-      shadowUrl: '/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
 
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: '/marker-icon-2x.png',
       iconUrl: '/marker-icon.png',
       shadowUrl: '/marker-shadow.png',
     });
-    console.log('Leaflet icons configured');
   }, []);
 
-  if (!mounted) {
-    console.log('Map not mounted yet');
-    return null;
-  }
-
-  console.log('Rendering map with center:', coordinates || center);
+  if (!mounted) return null;
 
   return (
     <div className="w-full h-full relative">
       <MapContainer
-        center={coordinates || center}
+        center={center}
         zoom={zoom}
-        className="h-full w-full rounded-lg"
-        scrollWheelZoom={false}
+        className="w-full h-full"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <CenterControl coordinates={coordinates} />
+        
+        {sites.map((site) => {
+          const primaryPeriod = site.periods.find(p => p.id === site.primaryPeriod);
+          if (!primaryPeriod) return null;
+
+          return (
+            <Marker
+              key={site.id}
+              position={[site.location.latitude, site.location.longitude]}
+              icon={L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background-color: ${primaryPeriod.color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.3);"></div>`,
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
+              })}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h3 className="font-semibold mb-1">
+                    {getLocalizedField(site.name, selectedLanguage)}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {getLocalizedField(site.description, selectedLanguage)}
+                  </p>
+                  {site.status !== 'active' && (
+                    <div className="text-red-500 text-sm">
+                      {site.status === 'temporary_closed' ? 'Midlertidigt lukket' : 'Permanent lukket'}
+                    </div>
+                  )}
+                  {site.location.accessibility && (
+                    <div className="text-sm text-gray-500 mt-2">
+                      <strong>Tilgængelighed:</strong><br/>
+                      {getLocalizedField(site.location.accessibility, selectedLanguage)}
+                    </div>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
+
         {coordinates && (
-          <Circle
-            center={coordinates}
-            radius={20}
-            pathOptions={{ 
-              color: '#22C55E',         // Grøn kant
-              fillColor: '#86EFAC',     // Lysere grøn fyld
-              weight: 2,                // Tykkere kant
-              fillOpacity: 0.6          // Semi-transparent fyld
-            }}
-          />
+          <>
+            <Circle
+              center={coordinates}
+              radius={10}
+              pathOptions={{ color: '#4CAF50', fillColor: '#4CAF50' }}
+            />
+            <CenterControl coordinates={coordinates} />
+          </>
         )}
-        {sites.map((site) => (
-          <Marker
-            key={site.id}
-            position={[site.location.latitude, site.location.longitude]}
-            icon={
-              site.id === activeSiteId
-                ? L.icon({
-                    iconRetinaUrl: '/marker-icon-2x-green.png',
-                    iconUrl: '/marker-icon-green.png',
-                    shadowUrl: '/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
-                  })
-                : L.icon({
-                    iconRetinaUrl: '/marker-icon-2x.png',
-                    iconUrl: '/marker-icon.png',
-                    shadowUrl: '/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
-                  })
-            }
-          >
-            <Popup>
-              <div className="p-2">
-                <h3 className="font-bold">{getLocalizedField(site.name, 'da')}</h3>
-                <p className="text-sm">{getLocalizedField(site.description, 'da')}</p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
       </MapContainer>
-      {error && (
-        <div className="absolute bottom-4 left-4 bg-red-50 text-red-600 px-4 py-2 rounded-lg shadow">
-          {error}
-        </div>
-      )}
     </div>
   );
 }

@@ -1,8 +1,9 @@
-import { Period } from '@/types/models';
+import { Period, getLocalizedField } from '@/types/models';
 
 interface PeriodFilterProps {
   periods: Period[];
   selectedPeriodId: string | null;
+  selectedLanguage: string;
   onSelectPeriod: (periodId: string | null) => void;
   onClose: () => void;
 }
@@ -10,9 +11,13 @@ interface PeriodFilterProps {
 export default function PeriodFilter({
   periods,
   selectedPeriodId,
+  selectedLanguage,
   onSelectPeriod,
   onClose
 }: PeriodFilterProps) {
+  // Sorter perioder efter order
+  const sortedPeriods = [...periods].sort((a, b) => a.order - b.order);
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end">
       <div className="bg-white w-full rounded-t-xl p-4 space-y-4">
@@ -41,7 +46,7 @@ export default function PeriodFilter({
 
         {/* Liste over perioder */}
         <div className="space-y-2">
-          {periods.map((period) => (
+          {sortedPeriods.map((period) => (
             <button
               key={period.id}
               onClick={() => onSelectPeriod(period.id)}
@@ -54,7 +59,16 @@ export default function PeriodFilter({
                   className="w-4 h-4 rounded-full"
                   style={{ backgroundColor: period.color }}
                 />
-                <span className="font-medium">{period.name}</span>
+                <div className="text-left">
+                  <div className="font-medium">
+                    {getLocalizedField(period.name, selectedLanguage)}
+                  </div>
+                  {period.startYear && period.endYear && (
+                    <div className="text-sm text-gray-500">
+                      {period.startYear < 0 ? Math.abs(period.startYear) + ' f.Kr.' : period.startYear} - {period.endYear}
+                    </div>
+                  )}
+                </div>
               </div>
               {selectedPeriodId === period.id && (
                 <span className="text-blue-600">✓</span>

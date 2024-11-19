@@ -1,4 +1,70 @@
-import { HeritageSite } from '@/types/models';
+import { HeritageSite, Period, Tag } from '@/types/models';
+
+// Perioder
+export const periods: Period[] = [
+  {
+    id: 'medieval',
+    name: {
+      da: 'Middelalder',
+      en: 'Medieval',
+      pt: 'Medieval'
+    },
+    description: {
+      da: 'Perioden fra det 5. til det 15. århundrede',
+      en: 'The period from the 5th to the 15th century',
+      pt: 'O período do século V ao século XV'
+    },
+    startYear: 500,
+    endYear: 1500,
+    color: '#724B34',
+    order: 1
+  },
+  {
+    id: 'roman',
+    name: {
+      da: 'Romersk',
+      en: 'Roman',
+      pt: 'Romano'
+    },
+    description: {
+      da: 'Den romerske periode i Portugal',
+      en: 'The Roman period in Portugal',
+      pt: 'O período romano em Portugal'
+    },
+    startYear: -200,
+    endYear: 500,
+    color: '#8B0000',
+    order: 0
+  }
+];
+
+// Tags
+export const tags: Tag[] = [
+  {
+    id: 'castle',
+    name: {
+      da: 'Slot',
+      en: 'Castle',
+      pt: 'Castelo'
+    }
+  },
+  {
+    id: 'church',
+    name: {
+      da: 'Kirke',
+      en: 'Church',
+      pt: 'Igreja'
+    }
+  },
+  {
+    id: 'bridge',
+    name: {
+      da: 'Bro',
+      en: 'Bridge',
+      pt: 'Ponte'
+    }
+  }
+];
 
 export const mockSites: HeritageSite[] = [
   {
@@ -9,38 +75,84 @@ export const mockSites: HeritageSite[] = [
       pt: 'Castelo de Tavira'
     },
     description: {
-      da: 'Historisk slot fra det 8. århundrede, oprindeligt bygget af maurerne. Slottet byder på en fantastisk udsigt over Taviras gamle bydel og floden Gilão.',
-      en: 'Historic castle from the 8th century, originally built by the Moors. The castle offers spectacular views over Tavira\'s old town and the Gilão river.',
-      pt: 'Castelo histórico do século VIII, originalmente construído pelos mouros. O castelo oferece vistas espetaculares sobre a cidade velha de Tavira e o rio Gilão.'
+      da: 'Historisk slot fra det 8. århundrede, oprindeligt bygget af maurerne',
+      en: 'Historic castle from the 8th century, originally built by the Moors',
+      pt: 'Castelo histórico do século VIII, originalmente construído pelos mouros'
     },
     detailedInfo: {
-      da: 'Tavira Slot blev genopbygget i det 13. århundrede efter den kristne generobring. De originale mauriske mure og tårne er stadig synlige. Slottet har spillet en vigtig rolle i byens forsvar gennem århundrederne.',
-      en: 'Tavira Castle was rebuilt in the 13th century after the Christian reconquest. The original Moorish walls and towers are still visible. The castle has played a crucial role in the city\'s defense throughout the centuries.',
-      pt: 'O Castelo de Tavira foi reconstruído no século XIII após a reconquista cristã. As muralhas e torres mouriscas originais ainda são visíveis. O castelo desempenhou um papel crucial na defesa da cidade ao longo dos séculos.'
-    },
-    period: {
-      id: '1',
-      name: 'Medieval',
-      color: '#724B34'
+      da: 'Tavira Slot blev genopbygget i det 13. århundrede efter den kristne generobring',
+      en: 'Tavira Castle was rebuilt in the 13th century after the Christian reconquest',
+      pt: 'O Castelo de Tavira foi reconstruído no século XIII após a reconquista cristã'
     },
     location: {
+      id: 'tavira-castle-loc',
       latitude: 37.12548631187557,
       longitude: -7.651247332301158,
-      address: 'Calçada D. Paio Peres Correia, Tavira'
+      address: {
+        da: 'Calçada D. Paio Peres Correia, Tavira',
+        en: 'Calçada D. Paio Peres Correia, Tavira',
+        pt: 'Calçada D. Paio Peres Correia, Tavira'
+      },
+      accessibility: {
+        da: 'Trapper og ujævnt terræn. Begrænset adgang for kørestolsbrugere',
+        en: 'Stairs and uneven terrain. Limited wheelchair access',
+        pt: 'Escadas e terreno irregular. Acesso limitado para cadeiras de rodas'
+      }
     },
-    openingHours: {
-      monday: '09:00-17:00',
-      tuesday: '09:00-17:00',
-      wednesday: '09:00-17:00',
-      thursday: '09:00-17:00',
-      friday: '09:00-17:00',
-      saturday: '09:00-17:00',
-      sunday: '09:00-17:00'
-    },
+    periods: [periods[0]], // Medieval
+    primaryPeriod: 'medieval',
     images: [
-      'tavira-castle-1.jpg',
-      'tavira-castle-2.jpg'
-    ]
+      {
+        id: 'castle-1',
+        url: '/images/tavira-castle-1.jpg',
+        alt: {
+          da: 'Tavira Slot set fra oven',
+          en: 'Aerial view of Tavira Castle',
+          pt: 'Vista aérea do Castelo de Tavira'
+        },
+        caption: {
+          da: 'Slottets mure og tårne set fra luften',
+          en: 'The castle walls and towers from above',
+          pt: 'As muralhas e torres do castelo vistas de cima'
+        },
+        credit: 'Tavira Tourism Board',
+        year: 2022,
+        order: 1
+      }
+    ],
+    openingHours: [
+      {
+        weekday: 1, // Monday
+        slots: [{ open: '09:00', close: '17:00' }]
+      },
+      {
+        weekday: 2, // Tuesday
+        slots: [{ open: '09:00', close: '17:00' }]
+      },
+      {
+        weekday: 3, // Wednesday
+        slots: [{ open: '09:00', close: '17:00' }]
+      },
+      {
+        weekday: 4, // Thursday
+        slots: [{ open: '09:00', close: '17:00' }]
+      },
+      {
+        weekday: 5, // Friday
+        slots: [{ open: '09:00', close: '17:00' }]
+      },
+      {
+        weekday: 6, // Saturday
+        slots: [{ open: '10:00', close: '16:00' }]
+      },
+      {
+        weekday: 0, // Sunday
+        slots: [{ open: '10:00', close: '16:00' }]
+      }
+    ],
+    tags: [tags[0]], // Castle tag
+    status: 'active',
+    lastUpdated: '2024-01-15T12:00:00Z'
   },
   {
     id: '2',
@@ -50,38 +162,84 @@ export const mockSites: HeritageSite[] = [
       pt: 'Igreja de Santa Maria do Castelo'
     },
     description: {
-      da: 'Gotisk kirke fra det 13. århundrede, bygget på ruinerne af en moské. Kirken er kendt for sine smukke azulejos og gravmæler.',
-      en: 'Gothic church from the 13th century, built on the ruins of a mosque. The church is known for its beautiful azulejos and tombs.',
-      pt: 'Igreja gótica do século XIII, construída sobre as ruínas de uma mesquita. A igreja é conhecida pelos seus belos azulejos e túmulos.'
+      da: 'Gotisk kirke fra det 13. århundrede, bygget på ruinerne af en moské',
+      en: 'Gothic church from the 13th century, built on the ruins of a mosque',
+      pt: 'Igreja gótica do século XIII, construída sobre as ruínas de uma mesquita'
     },
     detailedInfo: {
-      da: 'Kirken blev grundlagt af Kong Afonso III efter den kristne generobring af Tavira. Den indeholder gravene af syv kristne riddere, der døde under et maurisk baghold i 1242.',
-      en: 'The church was founded by King Afonso III after the Christian reconquest of Tavira. It contains the tombs of seven Christian knights who died during a Moorish ambush in 1242.',
-      pt: 'A igreja foi fundada pelo Rei Afonso III após a reconquista cristã de Tavira. Contém os túmulos de sete cavaleiros cristãos que morreram durante uma emboscada moura em 1242.'
-    },
-    period: {
-      id: '2',
-      name: 'Gothic',
-      color: '#4B4B4B'
+      da: 'Kirken blev grundlagt af Kong Afonso III efter den kristne generobring af Tavira',
+      en: 'The church was founded by King Afonso III after the Christian reconquest of Tavira',
+      pt: 'A igreja foi fundada pelo Rei Afonso III após a reconquista cristã de Tavira'
     },
     location: {
+      id: 'santa-maria-loc',
       latitude: 37.12536221217024,
       longitude: -7.651937103464756,
-      address: 'Largo de Santa Maria, Tavira'
+      address: {
+        da: 'Largo de Santa Maria, Tavira',
+        en: 'Largo de Santa Maria, Tavira',
+        pt: 'Largo de Santa Maria, Tavira'
+      },
+      accessibility: {
+        da: 'Trapper og ujævnt terræn. Begrænset adgang for kørestolsbrugere',
+        en: 'Stairs and uneven terrain. Limited wheelchair access',
+        pt: 'Escadas e terreno irregular. Acesso limitado para cadeiras de rodas'
+      }
     },
-    openingHours: {
-      monday: '10:00-13:00',
-      tuesday: '10:00-13:00',
-      wednesday: '10:00-13:00',
-      thursday: '10:00-13:00',
-      friday: '10:00-13:00',
-      saturday: '10:00-13:00',
-      sunday: '11:00-13:00'
-    },
+    periods: [periods[0]], // Medieval
+    primaryPeriod: 'medieval',
     images: [
-      'santa-maria-1.jpg',
-      'santa-maria-2.jpg'
-    ]
+      {
+        id: 'santa-maria-1',
+        url: '/images/santa-maria-1.jpg',
+        alt: {
+          da: 'Igreja de Santa Maria do Castelo',
+          en: 'Church of Santa Maria do Castelo',
+          pt: 'Igreja de Santa Maria do Castelo'
+        },
+        caption: {
+          da: 'Kirken set fra gaden',
+          en: 'The church from the street',
+          pt: 'A igreja vista da rua'
+        },
+        credit: 'Tavira Tourism Board',
+        year: 2022,
+        order: 1
+      }
+    ],
+    openingHours: [
+      {
+        weekday: 1, // Monday
+        slots: [{ open: '10:00', close: '13:00' }]
+      },
+      {
+        weekday: 2, // Tuesday
+        slots: [{ open: '10:00', close: '13:00' }]
+      },
+      {
+        weekday: 3, // Wednesday
+        slots: [{ open: '10:00', close: '13:00' }]
+      },
+      {
+        weekday: 4, // Thursday
+        slots: [{ open: '10:00', close: '13:00' }]
+      },
+      {
+        weekday: 5, // Friday
+        slots: [{ open: '10:00', close: '13:00' }]
+      },
+      {
+        weekday: 6, // Saturday
+        slots: [{ open: '10:00', close: '13:00' }]
+      },
+      {
+        weekday: 0, // Sunday
+        slots: [{ open: '11:00', close: '13:00' }]
+      }
+    ],
+    tags: [tags[1]], // Church tag
+    status: 'active',
+    lastUpdated: '2024-01-15T12:00:00Z'
   },
   {
     id: '3',
@@ -91,37 +249,83 @@ export const mockSites: HeritageSite[] = [
       pt: 'Ponte Romana'
     },
     description: {
-      da: 'Ikonisk bro over floden Gilão, der forbinder de to dele af Taviras historiske centrum. På trods af navnet stammer den nuværende struktur fra det 17. århundrede.',
-      en: 'Iconic bridge over the Gilão river, connecting the two parts of Tavira\'s historic center. Despite its name, the current structure dates from the 17th century.',
-      pt: 'Ponte icônica sobre o rio Gilão, ligando as duas partes do centro histórico de Tavira. Apesar do nome, a estrutura atual data do século XVII.'
+      da: 'Ikonisk bro over floden Gilão, der forbinder de to dele af Taviras historiske centrum',
+      en: 'Iconic bridge over the Gilão river, connecting the two parts of Tavira\'s historic center',
+      pt: 'Ponte icônica sobre o rio Gilão, ligando as duas partes do centro histórico de Tavira'
     },
     detailedInfo: {
-      da: 'Den oprindelige romerske bro blev erstattet af en maurisk konstruktion, som senere blev genopbygget i det 17. århundrede. Broen har syv buer og er et populært fotomotiv.',
-      en: 'The original Roman bridge was replaced by a Moorish construction, which was later rebuilt in the 17th century. The bridge has seven arches and is a popular photography spot.',
-      pt: 'A ponte romana original foi substituída por uma construção moura, que foi posteriormente reconstruída no século XVII. A ponte tem sete arcos e é um local popular para fotografia.'
-    },
-    period: {
-      id: '3',
-      name: 'Early Modern',
-      color: '#8B4513'
+      da: 'Den oprindelige romerske bro blev erstattet af en maurisk konstruktion, som senere blev genopbygget i det 17. århundrede',
+      en: 'The original Roman bridge was replaced by a Moorish construction, which was later rebuilt in the 17th century',
+      pt: 'A ponte romana original foi substituída por uma construção moura, que foi posteriormente reconstruída no século XVII'
     },
     location: {
+      id: 'roman-bridge-loc',
       latitude: 37.12699915416825,
       longitude: -7.649895603464685,
-      address: 'Ponte Romana, Tavira'
+      address: {
+        da: 'Ponte Romana, Tavira',
+        en: 'Ponte Romana, Tavira',
+        pt: 'Ponte Romana, Tavira'
+      },
+      accessibility: {
+        da: 'Trapper og ujævnt terræn. Begrænset adgang for kørestolsbrugere',
+        en: 'Stairs and uneven terrain. Limited wheelchair access',
+        pt: 'Escadas e terreno irregular. Acesso limitado para cadeiras de rodas'
+      }
     },
-    openingHours: {
-      monday: '00:00-24:00',
-      tuesday: '00:00-24:00',
-      wednesday: '00:00-24:00',
-      thursday: '00:00-24:00',
-      friday: '00:00-24:00',
-      saturday: '00:00-24:00',
-      sunday: '00:00-24:00'
-    },
+    periods: [periods[1]], // Roman
+    primaryPeriod: 'roman',
     images: [
-      'roman-bridge-1.jpg',
-      'roman-bridge-2.jpg'
-    ]
+      {
+        id: 'roman-bridge-1',
+        url: '/images/roman-bridge-1.jpg',
+        alt: {
+          da: 'Romersk Bro',
+          en: 'Roman Bridge',
+          pt: 'Ponte Romana'
+        },
+        caption: {
+          da: 'Broen set fra floden',
+          en: 'The bridge from the river',
+          pt: 'A ponte vista do rio'
+        },
+        credit: 'Tavira Tourism Board',
+        year: 2022,
+        order: 1
+      }
+    ],
+    openingHours: [
+      {
+        weekday: 1, // Monday
+        slots: [{ open: '00:00', close: '24:00' }]
+      },
+      {
+        weekday: 2, // Tuesday
+        slots: [{ open: '00:00', close: '24:00' }]
+      },
+      {
+        weekday: 3, // Wednesday
+        slots: [{ open: '00:00', close: '24:00' }]
+      },
+      {
+        weekday: 4, // Thursday
+        slots: [{ open: '00:00', close: '24:00' }]
+      },
+      {
+        weekday: 5, // Friday
+        slots: [{ open: '00:00', close: '24:00' }]
+      },
+      {
+        weekday: 6, // Saturday
+        slots: [{ open: '00:00', close: '24:00' }]
+      },
+      {
+        weekday: 0, // Sunday
+        slots: [{ open: '00:00', close: '24:00' }]
+      }
+    ],
+    tags: [tags[2]], // Bridge tag
+    status: 'active',
+    lastUpdated: '2024-01-15T12:00:00Z'
   }
 ];

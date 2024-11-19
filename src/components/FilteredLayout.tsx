@@ -1,14 +1,16 @@
-import { Period } from '@/types/models';
+import { Period, getLocalizedField } from '@/types/models';
 import { X } from 'lucide-react';
 
 interface FilteredLayoutProps {
   selectedPeriod: Period | null;
+  selectedLanguage?: string;
   onClearFilter: () => void;
   children: React.ReactNode;
 }
 
 export default function FilteredLayout({
   selectedPeriod,
+  selectedLanguage = 'da',
   onClearFilter,
   children
 }: FilteredLayoutProps) {
@@ -27,7 +29,7 @@ export default function FilteredLayout({
               style={{ backgroundColor: selectedPeriod.color }}
             />
             <span className="text-sm font-medium">
-              {selectedPeriod.name}
+              {getLocalizedField(selectedPeriod.name, selectedLanguage)}
             </span>
           </div>
           <button

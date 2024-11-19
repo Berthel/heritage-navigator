@@ -25,7 +25,7 @@ interface MobileLayoutProps {
 export default function MobileLayout({ sites }: MobileLayoutProps) {
   const [view, setView] = useState<'map' | 'list'>('map');
   const [expanded, setExpanded] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<'da' | 'en' | 'pt'>('da');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('da');
   const [activeSiteId, setActiveSiteId] = useState<string | undefined>();
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [showPeriodFilter, setShowPeriodFilter] = useState(false);
@@ -36,11 +36,13 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
   const periods = useMemo(() => {
     const uniquePeriods = new Map<string, Period>();
     sites.forEach(site => {
-      if (!uniquePeriods.has(site.period.id)) {
-        uniquePeriods.set(site.period.id, site.period);
-      }
+      site.periods.forEach(period => {
+        if (!uniquePeriods.has(period.id)) {
+          uniquePeriods.set(period.id, period);
+        }
+      });
     });
-    return Array.from(uniquePeriods.values());
+    return Array.from(uniquePeriods.values()).sort((a, b) => a.order - b.order);
   }, [sites]);
 
   // Find den valgte periode
@@ -53,7 +55,7 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
   const filteredSites = useMemo(() => {
     return sites.filter(site => {
       const matchesFavorites = !showOnlyFavorites || isFavorite(site.id);
-      const matchesPeriod = !selectedPeriodId || site.period.id === selectedPeriodId;
+      const matchesPeriod = !selectedPeriodId || site.periods.some(p => p.id === selectedPeriodId);
       return matchesFavorites && matchesPeriod;
     });
   }, [sites, showOnlyFavorites, isFavorite, selectedPeriodId]);
@@ -69,12 +71,17 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
       <main className="flex-1 pt-[4.5rem] pb-16 relative">
         <FilteredLayout
           selectedPeriod={selectedPeriod}
+          selectedLanguage={selectedLanguage}
           onClearFilter={() => setSelectedPeriodId(null)}
         >
           {view === 'map' ? (
             <>
               <div className={`${expanded ? 'h-full' : 'h-2/5'} relative`}>
-                <MapComponent sites={filteredSites} activeSiteId={activeSiteId} />
+                <MapComponent 
+                  sites={filteredSites} 
+                  activeSiteId={activeSiteId} 
+                  selectedLanguage={selectedLanguage}
+                />
                 <div className="absolute bottom-4 right-4 flex flex-col gap-2">
                   <button 
                     className="p-2 bg-white rounded-full shadow-lg"
@@ -104,28 +111,68 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
               )}
             </>
           ) : (
-            <div className="h-full overflow-y-auto">
-              <SiteList 
-                sites={filteredSites}
-                selectedLanguage={selectedLanguage}
-                onSiteSelect={(siteId) => {
-                  setActiveSiteId(siteId);
-                  setView('map');
-                  setExpanded(false);
-                }}
-                onFavorite={toggleFavorite}
-                isFavorite={isFavorite}
-              />
-            </div>
+            <SiteList 
+              sites={filteredSites}
+              selectedLanguage={selectedLanguage}
+              onSiteSelect={setActiveSiteId}
+              onFavorite={toggleFavorite}
+              isFavorite={isFavorite}
+            />
           )}
         </FilteredLayout>
       </main>
+
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t">
+        <div className="flex justify-around items-center h-16">
+          <button 
+            onClick={() => setView('map')}
+            className={`flex flex-col items-center gap-1 px-4 ${
+              view === 'map' ? 'text-blue-600' : 'text-gray-600'
+            }`}
+          >
+            <MapIcon size={20} />
+            <span className="text-xs">Kort</span>
+          </button>
+          
+          <button 
+            onClick={() => setView('list')}
+            className={`flex flex-col items-center gap-1 px-4 ${
+              view === 'list' ? 'text-blue-600' : 'text-gray-600'
+            }`}
+          >
+            <List size={20} />
+            <span className="text-xs">Liste</span>
+          </button>
+
+          <button 
+            onClick={() => setShowPeriodFilter(true)}
+            className={`flex flex-col items-center gap-1 px-4 ${
+              selectedPeriod ? 'text-blue-600' : 'text-gray-600'
+            }`}
+          >
+            <Clock size={20} />
+            <span className="text-xs">Periode</span>
+          </button>
+
+          <button 
+            onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+            className={`flex flex-col items-center gap-1 px-4 ${
+              showOnlyFavorites ? 'text-blue-600' : 'text-gray-600'
+            }`}
+          >
+            <Heart size={20} />
+            <span className="text-xs">Favoritter</span>
+          </button>
+        </div>
+      </nav>
 
       {/* Period Filter Modal */}
       {showPeriodFilter && (
         <PeriodFilter
           periods={periods}
           selectedPeriodId={selectedPeriodId}
+          selectedLanguage={selectedLanguage}
           onSelectPeriod={(periodId) => {
             setSelectedPeriodId(periodId);
             setShowPeriodFilter(false);
@@ -133,44 +180,6 @@ export default function MobileLayout({ sites }: MobileLayoutProps) {
           onClose={() => setShowPeriodFilter(false)}
         />
       )}
-
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 w-full bg-white border-t px-4 py-2">
-        <div className="flex justify-around items-center">
-          <button 
-            className={`p-2 flex flex-col items-center ${view === 'map' ? 'text-blue-600' : ''}`}
-            onClick={() => setView('map')}
-          >
-            <MapIcon size={24} />
-            <span className="text-xs">Kort</span>
-          </button>
-          <button 
-            className={`p-2 flex flex-col items-center ${view === 'list' ? 'text-blue-600' : ''}`}
-            onClick={() => setView('list')}
-          >
-            <List size={24} />
-            <span className="text-xs">Liste</span>
-          </button>
-          <button 
-            className={`p-2 flex flex-col items-center ${showOnlyFavorites ? 'text-red-500' : ''}`}
-            onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-          >
-            <Heart size={24} fill={showOnlyFavorites ? 'currentColor' : 'none'} />
-            <span className="text-xs">Favoritter</span>
-          </button>
-          <button 
-            className={`p-2 flex flex-col items-center ${selectedPeriodId ? 'text-blue-600' : ''}`}
-            onClick={() => setShowPeriodFilter(true)}
-          >
-            <Clock size={24} />
-            <span className="text-xs">Perioder</span>
-          </button>
-          <button className="p-2 flex flex-col items-center">
-            <Settings size={24} />
-            <span className="text-xs">Mere</span>
-          </button>
-        </div>
-      </nav>
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Heart, MapPin, ChevronRight } from 'lucide-react';
-import { HeritageSite, getLocalizedField } from '@/types/models';
+import { Heart, MapPin, ChevronRight, Clock } from 'lucide-react';
+import { HeritageSite, getLocalizedField, isOpenNow } from '@/types/models';
 
 interface SiteCardProps {
   site: HeritageSite;
-  selectedLanguage: 'da' | 'en' | 'pt';
+  selectedLanguage: string;
   onFavorite?: (siteId: string) => void;
   onShowOnMap?: (siteId: string) => void;
   onReadMore?: (siteId: string) => void;
@@ -19,22 +19,42 @@ const SiteCard: React.FC<SiteCardProps> = ({
   onReadMore,
   isFavorite = false
 }) => {
+  const primaryPeriod = site.periods.find(p => p.id === site.primaryPeriod);
+  const isOpen = isOpenNow(site.openingHours);
+
   return (
     <div className="bg-white rounded-lg border p-4 mb-3">
       <div className="flex items-start gap-3">
         {/* Period indicator */}
-        <div 
-          className="h-2 w-2 mt-2 rounded-full"
-          style={{ backgroundColor: site.period.color }}
-          title={site.period.name}
-        />
+        {primaryPeriod && (
+          <div 
+            className="h-2 w-2 mt-2 rounded-full"
+            style={{ backgroundColor: primaryPeriod.color }}
+            title={getLocalizedField(primaryPeriod.name, selectedLanguage)}
+          />
+        )}
         
         <div className="flex-1">
           {/* Header with title and favorite */}
           <div className="flex justify-between items-start">
-            <h3 className="font-semibold text-lg">
-              {getLocalizedField(site.name, selectedLanguage)}
-            </h3>
+            <div>
+              <h3 className="font-semibold text-lg">
+                {getLocalizedField(site.name, selectedLanguage)}
+              </h3>
+              <div className="flex items-center gap-2 text-sm">
+                {site.status !== 'active' && (
+                  <span className="text-red-500">
+                    {site.status === 'temporary_closed' ? 'Midlertidigt lukket' : 'Permanent lukket'}
+                  </span>
+                )}
+                {site.status === 'active' && (
+                  <span className={isOpen ? 'text-green-500' : 'text-gray-500'}>
+                    <Clock size={14} className="inline mr-1" />
+                    {isOpen ? 'Åben nu' : 'Lukket'}
+                  </span>
+                )}
+              </div>
+            </div>
             <button 
               onClick={() => onFavorite?.(site.id)}
               className={`p-2 rounded-full hover:bg-gray-100 ${
@@ -50,6 +70,20 @@ const SiteCard: React.FC<SiteCardProps> = ({
           <p className="text-gray-600 text-sm mb-3">
             {getLocalizedField(site.description, selectedLanguage)}
           </p>
+
+          {/* Tags */}
+          {site.tags.length > 0 && (
+            <div className="flex gap-2 mb-3">
+              {site.tags.map(tag => (
+                <span 
+                  key={tag.id}
+                  className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                >
+                  {getLocalizedField(tag.name, selectedLanguage)}
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* Action buttons */}
           <div className="flex justify-between items-center">
