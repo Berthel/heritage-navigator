@@ -43,6 +43,17 @@ const SiteCard: React.FC<SiteCardProps> = ({
     onFavorite?.(site.id);
   };
 
+  const handleShowDirections = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (userLocation) {
+      // Åbn Google Maps med rutevejledning
+      const url = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${site.location.latitude},${site.location.longitude}&travelmode=walking`;
+      window.open(url, '_blank');
+    }
+  };
+
   const distance = userLocation ? calculateDistance(
     userLocation.latitude,
     userLocation.longitude,
@@ -82,10 +93,14 @@ const SiteCard: React.FC<SiteCardProps> = ({
                   </span>
                 )}
                 {distance !== null && (
-                  <span className="text-blue-500 flex items-center gap-1">
+                  <button 
+                    onClick={handleShowDirections}
+                    className="text-blue-500 flex items-center gap-1 hover:text-blue-600 transition-colors"
+                    title="Vis vej i Google Maps"
+                  >
                     <Navigation2 size={14} />
                     {formatDistance(distance)}
-                  </span>
+                  </button>
                 )}
               </div>
             </div>
