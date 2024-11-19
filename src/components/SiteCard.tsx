@@ -67,7 +67,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
       {/* Top section with image and main info */}
       <div className="flex gap-4 mb-4">
         {/* Thumbnail with period indicator */}
-        <div className="relative flex-shrink-0">
+        <div className="relative flex-shrink-0 w-[30vw] min-w-[100px] max-w-[120px]">
           {primaryPeriod && (
             <div 
               className="absolute -left-1.5 -top-1.5 h-3.5 w-3.5 rounded-full border-2 border-white dark:border-gray-800 shadow-sm z-10"
@@ -75,7 +75,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
               title={getLocalizedField(primaryPeriod.name, selectedLanguage)}
             />
           )}
-          <div className="w-[120px] h-[90px] rounded-lg overflow-hidden">
+          <div className="w-full aspect-video rounded-lg overflow-hidden">
             {site.thumbnailImage && (
               <img
                 src={site.images.find(img => img.id === site.thumbnailImage)?.thumbnailUrl || 
