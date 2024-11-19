@@ -32,7 +32,8 @@ export default function SiteDetails({ site }: SiteDetailsProps) {
   };
 
   const mainImage = site.images.find(img => img.id === site.thumbnailImage);
-  const detailText = site.detailedInfo.sections.find(section => section.type === 'text')?.content;
+  const detailTextSection = site.detailedInfo.sections.find(section => section.type === 'text');
+  const detailText = detailTextSection?.content as { da: string; en: string; pt: string } | undefined;
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -105,7 +106,7 @@ export default function SiteDetails({ site }: SiteDetailsProps) {
                 className="whitespace-pre-line"
                 style={{ color: colors.text.muted }}
               >
-                {typeof detailText === 'string' ? detailText : detailText?.[selectedLanguage]}
+                {detailText?.[selectedLanguage]}
               </p>
             </CardContent>
           </Card>
