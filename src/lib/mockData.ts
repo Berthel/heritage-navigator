@@ -57,10 +57,10 @@ const mockPeriods: Period[] = [
 const mockImages: Image[] = [
   {
     id: 'castle1',
-    url: '/images/castle1.jpg',
-    thumbnailUrl: '/images/castle1-thumb.jpg',
-    mediumUrl: '/images/castle1-medium.jpg',
-    largeUrl: '/images/castle1-large.jpg',
+    url: '/images/sites/castle.jpg',
+    thumbnailUrl: '/images/sites/castle.jpg',
+    mediumUrl: '/images/sites/castle.jpg',
+    largeUrl: '/images/sites/castle.jpg',
     alt: {
       da: 'Tavira Slot set fra nord',
       en: 'Tavira Castle viewed from the north',
@@ -77,29 +77,50 @@ const mockImages: Image[] = [
     order: 1,
     contexts: ['thumbnail', 'gallery', 'banner'],
     dimensions: {
-      width: 1920,
-      height: 1080
+      width: 120,
+      height: 90
     }
   },
   {
-    id: 'roman-ruins1',
-    url: '/images/roman-ruins1.jpg',
-    thumbnailUrl: '/images/roman-ruins1-thumb.jpg',
-    mediumUrl: '/images/roman-ruins1-medium.jpg',
-    largeUrl: '/images/roman-ruins1-large.jpg',
+    id: 'roman-bridge1',
+    url: '/images/sites/bridge.jpg',
+    thumbnailUrl: '/images/sites/bridge.jpg',
+    mediumUrl: '/images/sites/bridge.jpg',
+    largeUrl: '/images/sites/bridge.jpg',
     alt: {
-      da: 'Romerske ruiner',
-      en: 'Roman ruins',
-      pt: 'Ruínas romanas'
+      da: 'Den romerske bro i Tavira',
+      en: 'The Roman Bridge in Tavira',
+      pt: 'A Ponte Romana em Tavira'
     },
-    credit: 'Archaeological Museum of Tavira',
-    year: 2022,
+    credit: 'Tavira Municipality',
+    year: 2023,
     periodId: 'roman',
     order: 2,
-    contexts: ['gallery', 'description'],
+    contexts: ['thumbnail', 'gallery', 'description'],
     dimensions: {
-      width: 1600,
-      height: 900
+      width: 120,
+      height: 90
+    }
+  },
+  {
+    id: 'islamic1',
+    url: '/images/sites/islamic.jpg',
+    thumbnailUrl: '/images/sites/islamic.jpg',
+    mediumUrl: '/images/sites/islamic.jpg',
+    largeUrl: '/images/sites/islamic.jpg',
+    alt: {
+      da: 'Det islamiske kvarter i Tavira',
+      en: 'The Islamic Quarter in Tavira',
+      pt: 'O Bairro Islâmico em Tavira'
+    },
+    credit: 'Tavira Municipality',
+    year: 2023,
+    periodId: 'islamic',
+    order: 3,
+    contexts: ['thumbnail', 'gallery', 'description'],
+    dimensions: {
+      width: 120,
+      height: 90
     }
   }
 ];
@@ -178,10 +199,10 @@ export const mockSites: HeritageSite[] = [
         },
         {
           type: 'gallery',
-          content: ['castle1', 'roman-ruins1']
+          content: ['castle1', 'roman-bridge1']
         }
       ],
-      gallery: ['castle1', 'roman-ruins1']
+      gallery: ['castle1', 'roman-bridge1']
     },
     location: {
       latitude: 37.125486311869814,
@@ -213,7 +234,7 @@ export const mockSites: HeritageSite[] = [
       en: 'Ancient Roman bridge over the Gilão River',
       pt: 'Antiga ponte romana sobre o Rio Gilão'
     },
-    thumbnailImage: 'roman-ruins1',
+    thumbnailImage: 'roman-bridge1',
     detailedInfo: {
       sections: [
         {
@@ -222,11 +243,11 @@ export const mockSites: HeritageSite[] = [
         },
         {
           type: 'image',
-          content: 'roman-ruins1',
+          content: 'roman-bridge1',
           imageLayout: 'full'
         }
       ],
-      gallery: ['roman-ruins1']
+      gallery: ['roman-bridge1']
     },
     location: {
       latitude: 37.12700770825847,
@@ -240,7 +261,7 @@ export const mockSites: HeritageSite[] = [
     },
     periods: [mockPeriods[0]], // Roman
     primaryPeriod: 'roman',
-    images: [mockImages[1]], // Roman ruins image
+    images: [mockImages[1]], // Roman bridge image
     openingHours: [
       {
         type: 'regular',
@@ -271,7 +292,7 @@ export const mockSites: HeritageSite[] = [
       en: 'Museum with a rich collection of Islamic art and artifacts',
       pt: 'Museu com uma rica coleção de arte e artefatos islâmicos'
     },
-    thumbnailImage: 'roman-ruins1',
+    thumbnailImage: 'islamic1',
     detailedInfo: {
       sections: [
         {
@@ -280,15 +301,15 @@ export const mockSites: HeritageSite[] = [
         },
         {
           type: 'image',
-          content: 'roman-ruins1',
+          content: 'islamic1',
           imageLayout: 'full'
         },
         {
           type: 'gallery',
-          content: ['roman-ruins1']
+          content: ['islamic1']
         }
       ],
-      gallery: ['roman-ruins1']
+      gallery: ['islamic1']
     },
     location: {
       latitude: 37.12602951058043,
@@ -302,7 +323,7 @@ export const mockSites: HeritageSite[] = [
     },
     periods: [mockPeriods[1]], // Islamic
     primaryPeriod: 'islamic',
-    images: [mockImages[1]],
+    images: [mockImages[2]],
     openingHours: [regularOpeningHours],
     tags: [mockTags[1]], // Museum tag
     status: 'active',
