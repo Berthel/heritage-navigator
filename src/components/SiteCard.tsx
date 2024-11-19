@@ -63,14 +63,14 @@ const SiteCard: React.FC<SiteCardProps> = ({
   ) : null;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-4 mb-3">
+    <div className="bg-white rounded-lg border p-4 mb-3">
       {/* Top section with image and main info */}
       <div className="flex gap-4 mb-4">
         {/* Thumbnail with period indicator */}
         <div className="relative flex-shrink-0 w-[30vw] min-w-[100px] max-w-[120px]">
           {primaryPeriod && (
             <div 
-              className="absolute -left-1.5 -top-1.5 h-3.5 w-3.5 rounded-full border-2 border-white dark:border-gray-800 shadow-sm z-10"
+              className="absolute -left-1.5 -top-1.5 h-3.5 w-3.5 rounded-full border-2 border-white shadow-sm z-10"
               style={{ backgroundColor: primaryPeriod.color }}
               title={getLocalizedField(primaryPeriod.name, selectedLanguage)}
             />
@@ -90,7 +90,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
         {/* Title and status section */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start">
-            <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
+            <h3 className="font-semibold text-lg text-gray-900">
               {getLocalizedField(site.name, selectedLanguage)}
             </h3>
             <button 
@@ -125,7 +125,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
       </div>
 
       {/* Description section */}
-      <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
+      <p className="text-gray-600 text-sm mb-3">
         {getLocalizedField(site.description, selectedLanguage)}
       </p>
 
@@ -137,7 +137,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
             {site.tags.map(tag => (
               <span 
                 key={tag.id}
-                className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full"
+                className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
               >
                 {getLocalizedField(tag.name, selectedLanguage)}
               </span>
@@ -149,7 +149,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
         <div className="flex justify-between items-center">
           <button 
             onClick={handleShowMap}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm bg-gray-100 text-gray-600 hover:bg-gray-200"
           >
             <MapPin size={16} />
             Vis på kort

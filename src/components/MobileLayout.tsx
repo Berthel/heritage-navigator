@@ -116,7 +116,7 @@ export default function MobileLayout({
                 </div>
 
                 {!expanded && (
-                  <div className="h-3/5 bg-white overflow-y-auto">
+                  <div className="h-3/5 overflow-y-auto">
                     <SiteList 
                       sites={filteredSites} 
                       selectedLanguage={selectedLanguage} 
@@ -146,23 +146,20 @@ export default function MobileLayout({
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t">
         <div className="flex justify-around items-center h-16">
           <button 
-            onClick={() => setView('map')}
-            className={`flex flex-col items-center gap-1 px-4 ${
-              view === 'map' ? 'text-blue-600' : 'text-gray-600'
-            }`}
+            onClick={() => setView(view === 'map' ? 'list' : 'map')}
+            className="flex flex-col items-center gap-1 px-4 text-blue-600"
           >
-            <MapIcon size={20} />
-            <span className="text-xs">Kort</span>
-          </button>
-          
-          <button 
-            onClick={() => setView('list')}
-            className={`flex flex-col items-center gap-1 px-4 ${
-              view === 'list' ? 'text-blue-600' : 'text-gray-600'
-            }`}
-          >
-            <List size={20} />
-            <span className="text-xs">Liste</span>
+            {view === 'map' ? (
+              <>
+                <List size={20} />
+                <span className="text-xs">Liste</span>
+              </>
+            ) : (
+              <>
+                <MapIcon size={20} />
+                <span className="text-xs">Kort</span>
+              </>
+            )}
           </button>
 
           <button 

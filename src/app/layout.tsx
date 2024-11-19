@@ -32,13 +32,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="da">
+    <html lang="da" className="light">
       <head>
         <link rel="icon" href="/heritage-compass.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/heritage-compass.svg" />
       </head>
       <body className={inter.className}>
-        <main className="min-h-screen bg-white dark:bg-gray-900">
+        <main className="min-h-screen bg-white">
           {children}
         </main>
       </body>
