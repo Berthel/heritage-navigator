@@ -13,6 +13,10 @@ export const metadata: Metadata = {
     icon: '/heritage-compass.svg',
     apple: '/heritage-compass.svg',
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export const viewport: Viewport = {
