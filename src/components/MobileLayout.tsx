@@ -82,62 +82,64 @@ export default function MobileLayout({
       />
 
       {/* Main Content */}
-      <main className="flex-1 pt-[4.5rem] pb-16 relative">
-        <FilteredLayout
-          selectedPeriod={selectedPeriod}
-          selectedLanguage={selectedLanguage}
-          onClearFilter={() => setSelectedPeriodId(null)}
-          sites={filteredSites}
-          onSiteSelect={handleSiteSelect}
-          onFavorite={toggleFavorite}
-          isFavorite={isFavorite}
-          userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
-        >
-          {view === 'map' ? (
-            <>
-              <div className={`${expanded ? 'h-full' : 'h-2/5'} relative`}>
-                <MapComponent 
-                  sites={filteredSites} 
-                  activeSiteId={activeSiteId} 
-                  selectedLanguage={selectedLanguage}
-                />
-                <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-                  <button 
-                    className="p-2 bg-white rounded-full shadow-lg"
-                    onClick={() => setExpanded(!expanded)}
-                  >
-                    <ChevronUp 
-                      size={24} 
-                      className={`transform transition-transform ${expanded ? 'rotate-180' : ''}`}
-                    />
-                  </button>
-                </div>
-              </div>
-
-              {!expanded && (
-                <div className="h-3/5 bg-white overflow-y-auto">
-                  <SiteList 
+      <main className="flex-1 relative">
+        <div className="absolute inset-0 pt-[4.5rem] pb-16">
+          <FilteredLayout
+            selectedPeriod={selectedPeriod}
+            selectedLanguage={selectedLanguage}
+            onClearFilter={() => setSelectedPeriodId(null)}
+            sites={filteredSites}
+            onSiteSelect={handleSiteSelect}
+            onFavorite={toggleFavorite}
+            isFavorite={isFavorite}
+            userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
+          >
+            {view === 'map' ? (
+              <>
+                <div className={`${expanded ? 'h-full' : 'h-2/5'} relative`}>
+                  <MapComponent 
                     sites={filteredSites} 
-                    selectedLanguage={selectedLanguage} 
-                    onSiteSelect={handleSiteSelect}
-                    onFavorite={toggleFavorite}
-                    isFavorite={isFavorite}
-                    userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
+                    activeSiteId={activeSiteId} 
+                    selectedLanguage={selectedLanguage}
                   />
+                  <div className="absolute bottom-4 right-4 flex flex-col gap-2">
+                    <button 
+                      className="p-2 bg-white rounded-full shadow-lg"
+                      onClick={() => setExpanded(!expanded)}
+                    >
+                      <ChevronUp 
+                        size={24} 
+                        className={`transform transition-transform ${expanded ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+                  </div>
                 </div>
-              )}
-            </>
-          ) : (
-            <SiteList 
-              sites={filteredSites}
-              selectedLanguage={selectedLanguage}
-              onSiteSelect={handleSiteSelect}
-              onFavorite={toggleFavorite}
-              isFavorite={isFavorite}
-              userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
-            />
-          )}
-        </FilteredLayout>
+
+                {!expanded && (
+                  <div className="h-3/5 bg-white overflow-y-auto">
+                    <SiteList 
+                      sites={filteredSites} 
+                      selectedLanguage={selectedLanguage} 
+                      onSiteSelect={handleSiteSelect}
+                      onFavorite={toggleFavorite}
+                      isFavorite={isFavorite}
+                      userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
+                    />
+                  </div>
+                )}
+              </>
+            ) : (
+              <SiteList 
+                sites={filteredSites}
+                selectedLanguage={selectedLanguage}
+                onSiteSelect={handleSiteSelect}
+                onFavorite={toggleFavorite}
+                isFavorite={isFavorite}
+                userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
+              />
+            )}
+          </FilteredLayout>
+        </div>
       </main>
 
       {/* Bottom Navigation */}
