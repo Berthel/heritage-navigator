@@ -5,7 +5,7 @@ import { ArrowLeft, Share2, Heart, Clock, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import AppHeader from './AppHeader';
-import { HeritageSite } from '@/types/models';
+import { HeritageSite, LocalizedField } from '@/types/models';
 import { colors } from '@/styles/theme';
 import Image from 'next/image';
 
@@ -33,7 +33,7 @@ export default function SiteDetails({ site }: SiteDetailsProps) {
 
   const mainImage = site.images.find(img => img.id === site.thumbnailImage);
   const detailTextSection = site.detailedInfo.sections.find(section => section.type === 'text');
-  const detailText = detailTextSection?.content as { da: string; en: string; pt: string } | undefined;
+  const detailText = detailTextSection?.content as LocalizedField | undefined;
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">

@@ -30,7 +30,7 @@ export interface Image {
 // Tilføj reference til billeder i detaljeret info
 export interface DetailSection {
   type: 'text' | 'image' | 'gallery';
-  content: string | string[];  // Text eller image IDs
+  content: string | string[] | LocalizedField;  // Text (kan være oversat), eller image IDs
   imageLayout?: 'left' | 'right' | 'full';  // For enkeltbilleder
 }
 
