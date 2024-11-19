@@ -8,6 +8,7 @@ import AppHeader from './AppHeader';
 import { HeritageSite, LocalizedField } from '@/types/models';
 import { colors } from '@/styles/theme';
 import Image from 'next/image';
+import { PeriodBadge } from './PeriodBadge';
 
 interface SiteDetailsProps {
   site: HeritageSite;
@@ -69,9 +70,14 @@ export default function SiteDetails({ site }: SiteDetailsProps) {
 
         <div className="p-4 space-y-4">
           <div className="flex justify-between items-start">
-            <h2 className="text-2xl font-bold" style={{ color: colors.text.dark }}>
-              {site.name[selectedLanguage]}
-            </h2>
+            <div>
+              <h2 className="text-2xl font-bold" style={{ color: colors.text.dark }}>
+                {site.name[selectedLanguage]}
+              </h2>
+              {site.periods && site.periods.length > 0 && (
+                <PeriodBadge period={site.periods[0]} selectedLanguage={selectedLanguage} />
+              )}
+            </div>
             <Button 
               variant="ghost" 
               size="sm"
