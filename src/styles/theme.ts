@@ -4,7 +4,8 @@ export const colors = {
   accent: '#E6B17E',     // Lys kobber
   text: {
     dark: '#2C3E50',
-    light: '#ECF0F1'
+    light: '#ECF0F1',
+    muted: '#6B7280'  // Grå farve til sekundær tekst
   },
   periods: {
     medieval: '#724B34',
