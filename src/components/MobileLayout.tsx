@@ -10,6 +10,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import PeriodFilter from './PeriodFilter';
 import FilteredLayout from './FilteredLayout';
+import { Button } from '@/components/ui/button';
 
 // Dynamically import Map component to avoid SSR issues
 const MapComponent = dynamic(() => import('@/components/Map'), {
@@ -190,16 +191,29 @@ export default function MobileLayout({
 
       {/* Period Filter Modal */}
       {showPeriodFilter && (
-        <PeriodFilter
-          periods={periods}
-          selectedPeriodId={selectedPeriodId}
-          selectedLanguage={selectedLanguage}
-          onSelectPeriod={(periodId) => {
-            setSelectedPeriodId(periodId);
-            setShowPeriodFilter(false);
-          }}
-          onClose={() => setShowPeriodFilter(false)}
-        />
+        <div className="fixed inset-0 bg-black/50 z-50">
+          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl p-4">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold mb-2">Vælg periode</h3>
+              <PeriodFilter
+                periods={periods}
+                selectedPeriod={selectedPeriodId}
+                onPeriodSelect={(periodId) => {
+                  setSelectedPeriodId(periodId);
+                  setShowPeriodFilter(false);
+                }}
+                selectedLanguage={selectedLanguage}
+              />
+            </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setShowPeriodFilter(false)}
+            >
+              Luk
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );

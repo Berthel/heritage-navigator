@@ -26,10 +26,6 @@ export default function FilteredLayout({
   userLocation,
   children
 }: FilteredLayoutProps) {
-  if (!selectedPeriod) {
-    return <>{children}</>;
-  }
-
   // Lokaliserede tekster
   const resultText = {
     da: sites.length === 1 ? 'seværdighed fundet' : 'seværdigheder fundet',
@@ -38,69 +34,73 @@ export default function FilteredLayout({
   };
 
   // Periode år tekst
-  const yearText = selectedPeriod.startYear && selectedPeriod.endYear
+  const yearText = selectedPeriod && selectedPeriod.startYear && selectedPeriod.endYear
     ? `${selectedPeriod.startYear < 0 ? Math.abs(selectedPeriod.startYear) + ' f.Kr.' : selectedPeriod.startYear} - ${selectedPeriod.endYear < 0 ? Math.abs(selectedPeriod.endYear) + ' f.Kr.' : selectedPeriod.endYear}`
     : '';
 
   return (
     <div className="flex flex-col h-full">
-      <AnimatePresence>
-        <motion.div 
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -20, opacity: 0 }}
-          className="bg-white border-b"
-        >
-          {/* Filter header */}
-          <div className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div 
-                    className="w-3 h-3 rounded-full" 
-                    style={{ backgroundColor: selectedPeriod.color }}
-                  />
-                  <span className="font-medium">
-                    {getLocalizedField(selectedPeriod.name, selectedLanguage)}
-                  </span>
-                  {yearText && (
-                    <span className="text-sm text-gray-500">
-                      ({yearText})
+      {children}
+      {selectedPeriod && (
+        <AnimatePresence>
+          <motion.div 
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            className="bg-white border-b"
+          >
+            {/* Filter header */}
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: selectedPeriod.color }}
+                    />
+                    <span className="font-medium">
+                      {getLocalizedField(selectedPeriod.name, selectedLanguage)}
                     </span>
-                  )}
+                    {yearText && (
+                      <span className="text-sm text-gray-500">
+                        ({yearText})
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {sites.length} {resultText[selectedLanguage]}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-600">
-                  {sites.length} {resultText[selectedLanguage]}
-                </p>
+                <button
+                  onClick={onClearFilter}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                  aria-label="Ryd filter"
+                >
+                  <X size={20} />
+                </button>
               </div>
-              <button
-                onClick={onClearFilter}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                aria-label="Ryd filter"
-              >
-                <X size={20} />
-              </button>
+              
+              {/* Period description */}
+              <p className="text-sm text-gray-600 mt-2">
+                {getLocalizedField(selectedPeriod.description, selectedLanguage)}
+              </p>
             </div>
-            
-            {/* Period description */}
-            <p className="text-sm text-gray-600 mt-2">
-              {getLocalizedField(selectedPeriod.description, selectedLanguage)}
-            </p>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
+          </motion.div>
+        </AnimatePresence>
+      )}
       {/* Content */}
-      <div className="flex-1 overflow-auto">
-        <SiteList
-          sites={sites}
-          selectedLanguage={selectedLanguage}
-          onSiteSelect={onSiteSelect}
-          onFavorite={onFavorite || (() => {})}
-          isFavorite={isFavorite || (() => false)}
-          userLocation={userLocation}
-        />
-      </div>
+      {!children && (
+        <div className="flex-1 overflow-auto">
+          <SiteList
+            sites={sites}
+            selectedLanguage={selectedLanguage}
+            onSiteSelect={onSiteSelect}
+            onFavorite={onFavorite || (() => {})}
+            isFavorite={isFavorite || (() => false)}
+            userLocation={userLocation}
+          />
+        </div>
+      )}
     </div>
   );
 }
