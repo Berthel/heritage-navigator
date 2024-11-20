@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Share2, Heart, Clock, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,6 +10,7 @@ import { colors } from '@/styles/theme';
 import NextImage from 'next/image';
 import { PeriodBadge } from './PeriodBadge';
 import { useLanguage } from '@/hooks/useLanguage';
+import { getImages } from '@/lib/api';
 
 // Lokaliserede tekster
 const translations = {
@@ -44,11 +45,30 @@ interface SiteDetailsProps {
 const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) => {
   const [selectedLanguage, setSelectedLanguage] = useLanguage(initialLanguage);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [siteImages, setSiteImages] = useState<Image[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch images when component mounts
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const allImages = await getImages();
+        const relevantImages = allImages.filter(img => site.images.includes(img.id));
+        setSiteImages(relevantImages);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, [site.images]);
 
   // Helper function to get translations
   const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
 
-  const mainImage = site.images.find(img => img.id === site.thumbnailImage);
+  const mainImage = site.thumbnailImage ? siteImages.find(img => img.id === site.thumbnailImage) : null;
   
   console.log('Site detail sections:', site.detailedInfo?.sections);
   
@@ -64,7 +84,7 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
   console.log('Detail text:', detailText);
 
   // Get all images for the gallery
-  const galleryImages = site.images.filter(img => img.id !== site.thumbnailImage);
+  const galleryImages = siteImages.filter(img => img.id !== site.thumbnailImage);
 
   // State for modal
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
@@ -90,6 +110,10 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
       }
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>; // eller en mere sofistikeret loading indikator
+  }
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
