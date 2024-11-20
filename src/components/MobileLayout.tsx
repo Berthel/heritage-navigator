@@ -153,6 +153,7 @@ export default function MobileLayout({
             onFavorite={toggleFavorite}
             isFavorite={isFavorite}
             userLocation={coordinates ? { latitude: coordinates[0], longitude: coordinates[1] } : null}
+            city={city}
           >
             {view === 'map' ? (
               <>
