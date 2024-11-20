@@ -77,7 +77,11 @@ export default function SiteDetails({ site, city }: SiteDetailsProps) {
                 {site.name[selectedLanguage]}
               </h2>
               {site.periods && site.periods.length > 0 && (
-                <PeriodBadge period={site.periods[0]} selectedLanguage={selectedLanguage} />
+                <PeriodBadge 
+                  period={site.periods[0]} 
+                  selectedLanguage={selectedLanguage}
+                  className="mt-1"
+                />
               )}
             </div>
             <Button 

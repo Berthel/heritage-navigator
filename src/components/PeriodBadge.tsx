@@ -1,22 +1,31 @@
+import { motion } from 'framer-motion'
 import { Period, getLocalizedField } from "@/types/models";
 
 interface PeriodBadgeProps {
   period: Period;
-  selectedLanguage: string;
+  selectedLanguage: 'da' | 'en' | 'pt';
+  className?: string;
 }
 
-export const PeriodBadge = ({ period, selectedLanguage }: PeriodBadgeProps) => {
+export const PeriodBadge = ({ period, selectedLanguage, className = '' }: PeriodBadgeProps) => {
   if (!period) return null;
 
+  const localizedName = getLocalizedField(period.name, selectedLanguage);
+
   return (
-    <span
-      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+    <motion.div
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className={`
+        inline-flex items-center rounded-full px-3 py-1 text-sm font-medium
+        ${className}
+      `}
       style={{
         backgroundColor: `${period.color}20`,
         color: period.color
       }}
     >
-      {getLocalizedField(period.name, selectedLanguage)}
-    </span>
+      {localizedName}
+    </motion.div>
   );
 };
