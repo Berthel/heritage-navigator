@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { HeritageSite, getLocalizedField, City, Period } from '@/types/models';
+import { getPeriods } from '@/lib/api';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useGeolocation } from '@/hooks/useGeolocation';
