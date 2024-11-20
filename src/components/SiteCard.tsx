@@ -1,8 +1,7 @@
 'use client';
 
-import { Clock, MapPin, Heart, ChevronRight } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { HeritageSite, Period, getLocalizedField } from '@/types/models';
+import { MapPin, Heart, ChevronRight } from 'lucide-react';
+import { getLocalizedField, HeritageSite, Period } from '@/types/models';
 import { formatDistance } from '@/utils/formatters';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -46,52 +45,43 @@ export default function SiteCard({
   showDistance = true
 }: SiteCardProps) {
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
-  const [primaryPeriodData, setPrimaryPeriodData] = useState<Period | null>(null);
+  const [sitePeriods, setSitePeriods] = useState<Period[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchThumbnail = async () => {
+    const fetchData = async () => {
       try {
-        const images = await getImages();
-        const image = images.find(img => img.id === site.thumbnailImage);
-        if (image) {
-          setThumbnailUrl(image.thumbnailUrl || image.url);
+        // Fetch images
+        const allImages = await getImages();
+        const relevantImages = allImages.filter(img => site.images.includes(img.id));
+        if (site.thumbnailImage) {
+          const thumbnail = relevantImages.find(img => img.id === site.thumbnailImage);
+          if (thumbnail) {
+            setThumbnailUrl(thumbnail.url);
+          }
         }
-      } catch (error) {
-        console.error('Error fetching image:', error);
-      }
-    };
-    
-    if (site.thumbnailImage) {
-      fetchThumbnail();
-    }
-  }, [site.thumbnailImage]);
 
-  useEffect(() => {
-    const fetchPeriodData = async () => {
-      try {
-        const periods = await getPeriods();
-        const period = periods.find(p => p.id === site.primaryPeriod);
-        if (period) {
-          setPrimaryPeriodData(period);
+        // Fetch periods
+        if (site.periods && site.periods.length > 0) {
+          const allPeriods = await getPeriods();
+          const relevantPeriods = allPeriods.filter(p => site.periods.includes(p.id));
+          setSitePeriods(relevantPeriods);
         }
       } catch (error) {
-        console.error('Error fetching period:', error);
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
-    
-    if (site.primaryPeriod) {
-      fetchPeriodData();
-    }
-  }, [site.primaryPeriod]);
+
+    fetchData();
+  }, [site.images, site.thumbnailImage, site.periods]);
 
   const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
   const isOpen = true; // TODO: Implementer åbningstider
 
   return (
-    <motion.div 
-      layout
-      className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
-    >
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
       <div className="flex gap-4 p-4">
         {/* Thumbnail med periode indikator */}
         <div className="relative flex-shrink-0 w-[30vw] min-w-[100px] max-w-[120px]">
@@ -102,59 +92,44 @@ export default function SiteCard({
                 alt={getLocalizedField(site.name, selectedLanguage)}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 120px, 100px"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <svg
-                  className="w-8 h-8 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1}
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                <span>No image</span>
               </div>
             )}
-            {primaryPeriodData && (
-              <div 
-                className="absolute -left-1.5 -top-1.5 h-3.5 w-3.5 rounded-full border-2 border-white shadow-sm z-10"
-                style={{ backgroundColor: primaryPeriodData.color }}
-                title={getLocalizedField(primaryPeriodData.name, selectedLanguage)}
-              />
-            )}
           </div>
+          {sitePeriods[0] && (
+            <div 
+              className="absolute top-2 left-2 w-3 h-3 rounded-full"
+              style={{ backgroundColor: sitePeriods[0].color }}
+            />
+          )}
         </div>
 
-        {/* Title og beskrivelse */}
+        {/* Info sektion */}
         <div className="flex-1 min-w-0">
-          <div className="flex justify-between items-start">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="font-medium text-lg">
+              <h3 className="font-medium text-gray-900 leading-tight">
                 {getLocalizedField(site.name, selectedLanguage)}
               </h3>
-              <p className="text-gray-600 text-sm mt-1">
+              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
                 {getLocalizedField(site.description, selectedLanguage)}
               </p>
             </div>
             {onFavorite && (
-              <button 
+              <button
                 onClick={() => onFavorite(site.id)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors ml-2"
+                className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <Heart 
-                  className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
-                />
+                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
               </button>
             )}
           </div>
-          
-          <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+
+          {/* Meta information */}
+          <div className="flex flex-wrap gap-x-4 gap-y-2 mt-3 text-sm text-gray-500">
             {showDistance && site.distance !== undefined && (
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
@@ -162,11 +137,26 @@ export default function SiteCard({
               </div>
             )}
             <div className="flex items-center gap-1">
-              <Clock className={`w-4 h-4 ${isOpen ? 'text-green-600' : 'text-gray-600'}`} />
-              <span className={isOpen ? 'text-green-600' : 'text-gray-600'}>{isOpen ? t('openNow') : ''}</span>
+              <svg
+                className={`w-4 h-4 ${isOpen ? 'text-green-600' : 'text-gray-600'}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className={isOpen ? 'text-green-600' : 'text-gray-600'}>
+                {isOpen ? t('openNow') : ''}
+              </span>
             </div>
           </div>
 
+          {/* Actions */}
           <div className="flex items-center gap-4 mt-2">
             {onSiteSelect && (
               <button 
@@ -187,6 +177,6 @@ export default function SiteCard({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

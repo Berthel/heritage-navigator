@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { LanguageButton } from './LanguageButton';
 import { colors } from '@/styles/theme';
-import { createPortal } from 'react-dom';
 
 type Language = 'da' | 'en' | 'pt';
 
@@ -27,104 +27,61 @@ const languageCodes: Record<Language, string> = {
 
 export function LanguageSelector({ selectedLanguage, onLanguageChange }: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
-  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    // Create portal container on mount
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.top = '0';
-    container.style.left = '0';
-    container.style.width = '100%';
-    container.style.height = '100%';
-    container.style.pointerEvents = 'none';
-    container.style.zIndex = '9999';
-    document.body.appendChild(container);
-    setPortalContainer(container);
-
-    // Cleanup on unmount
-    return () => {
-      // Check if container is still in document.body before removing
-      if (document.body.contains(container)) {
-        document.body.removeChild(container);
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.language-selector')) {
+        setIsOpen(false);
       }
     };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const updateButtonRect = (button: HTMLButtonElement | null) => {
-    if (button) {
-      setButtonRect(button.getBoundingClientRect());
-    }
-  };
-
-  // Undgå rendering før komponenten er mounted
-  if (!mounted) {
-    return (
-      <div className="w-8 h-8" /> // Placeholder med samme størrelse
-    );
-  }
-
   return (
-    <div className="relative">
-      <motion.button
-        ref={updateButtonRect}
-        whileTap={{ scale: 0.95 }}
+    <div className="language-selector relative">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="gap-2"
         onClick={() => setIsOpen(!isOpen)}
-        className="rounded-full px-2 py-1 flex items-center gap-1 transition-colors duration-200 hover:bg-white/20 text-sm"
         style={{ 
           color: colors.text.light,
           background: 'rgba(255, 255, 255, 0.1)'
         }}
       >
-        {languageCodes[selectedLanguage]}
-        <ChevronDown 
-          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-        />
-      </motion.button>
-      
-      {portalContainer && buttonRect && createPortal(
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="rounded-lg shadow-lg overflow-hidden py-0.5 min-w-[100px] text-sm"
-              style={{ 
-                position: 'absolute',
-                top: buttonRect.bottom + 4,
-                left: Math.min(buttonRect.right - 100, window.innerWidth - 104),
-                background: colors.primary,
-                border: `1px solid ${colors.secondary}33`,
-                pointerEvents: 'auto'
-              }}
-            >
-              {(Object.keys(languageNames) as Language[]).map(lang => (
-                <button
-                  key={lang}
-                  onClick={() => {
-                    onLanguageChange(lang);
-                    setIsOpen(false);
-                  }}
-                  className="w-full text-left px-4 py-2 transition-colors duration-200 hover:bg-white/10"
-                  style={{ 
-                    color: selectedLanguage === lang ? colors.secondary : colors.text.light,
-                    fontWeight: selectedLanguage === lang ? 500 : 400
-                  }}
-                >
-                  {languageNames[lang]}
-                </button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        portalContainer
+        <Globe className="h-4 w-4" />
+        <span className="uppercase">{languageCodes[selectedLanguage]}</span>
+      </Button>
+
+      {isOpen && (
+        <div
+          className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="language-menu-button"
+          tabIndex={-1}
+          style={{ 
+            background: colors.primary,
+            border: `1px solid ${colors.secondary}33`
+          }}
+        >
+          <div className="py-1" role="none">
+            {(Object.keys(languageNames) as Language[]).map(lang => (
+              <LanguageButton
+                key={lang}
+                language={lang}
+                isSelected={selectedLanguage === lang}
+                onClick={() => {
+                  onLanguageChange(lang);
+                  setIsOpen(false);
+                }}
+              />
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

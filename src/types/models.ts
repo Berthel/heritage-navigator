@@ -115,17 +115,16 @@ export interface HeritageSite {
 
 export function getLocalizedField(field: LocalizedField | undefined, language: string): string {
   if (!field) return '';
-  return field[language as keyof LocalizedField] || field.en || field.da || '';
+  return field[language as keyof LocalizedField] || '';
 }
 
 // Hjælpefunktioner til billeder
-export function getImageForContext(images: Image[], imageId: string, context: ImageContext): string {
+export function getImageForContext(images: Image[], imageId: string, context: ImageContext): string | undefined {
   const image = images.find(img => img.id === imageId);
-  if (!image || !image.contexts.includes(context)) {
-    return ''; // eller default image url
-  }
-  
-  switch(context) {
+  if (!image) return undefined;
+
+  // Vælg den mest passende URL baseret på kontekst
+  switch (context) {
     case 'thumbnail':
       return image.thumbnailUrl || image.url;
     case 'gallery':
@@ -133,38 +132,43 @@ export function getImageForContext(images: Image[], imageId: string, context: Im
     case 'banner':
     case 'description':
       return image.largeUrl || image.url;
+    default:
+      return image.url;
   }
 }
 
-export function getGalleryImages(site: HeritageSite): Image[] {
+export function getGalleryImages(site: HeritageSite, images: Image[]): Image[] {
+  if (!site.detailedInfo?.gallery) return [];
   return site.detailedInfo.gallery
-    ? site.detailedInfo.gallery
-        .map(id => site.images.find(img => img.id === id))
-        .filter((img): img is Image => img !== undefined)
-    : [];
+    .map(id => images.find(img => img.id === id))
+    .filter((img): img is Image => img !== undefined);
 }
 
 export function isOpenNow(openingHours: OpeningHours[]): boolean {
-  const now = new Date();
-  const currentDay = now.getDay();
-  const currentTime = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+  if (!openingHours || openingHours.length === 0) return false;
 
-  // Find gældende åbningstider
+  const now = new Date();
+  const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const currentTime = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
+
+  // Find applicable opening hours (considering seasonal/special periods)
   const applicableHours = openingHours.find(hours => {
     if (hours.type === 'regular') return true;
     if (!hours.validFrom || !hours.validTo) return false;
 
-    const fromDate = new Date(hours.validFrom);
-    const toDate = new Date(hours.validTo);
-    return now >= fromDate && now <= toDate;
+    const from = new Date(hours.validFrom);
+    const to = new Date(hours.validTo);
+    return now >= from && now <= to;
   });
 
   if (!applicableHours) return false;
 
-  // Check om stedet er åbent i det aktuelle tidsrum
-  return applicableHours.slots.some(slot => {
-    return slot.dayOfWeek === currentDay &&
-           currentTime >= slot.opens &&
-           currentTime <= slot.closes;
-  });
+  // Find today's time slot
+  const todaySlot = applicableHours.slots.find(slot => slot.dayOfWeek === currentDay);
+  if (!todaySlot) return false;
+
+  // Check if current time is within opening hours
+  return currentTime >= todaySlot.opens && currentTime <= todaySlot.closes;
 }

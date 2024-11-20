@@ -5,12 +5,23 @@ import { ArrowLeft, Share2, Heart, Clock, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import AppHeader from './AppHeader';
-import { HeritageSite, LocalizedField, City, Image } from '@/types/models';
+import { HeritageSite, LocalizedField, City, Image, Period, DetailSection } from '@/types/models';
 import { colors } from '@/styles/theme';
 import NextImage from 'next/image';
 import { PeriodBadge } from './PeriodBadge';
 import { useLanguage } from '@/hooks/useLanguage';
-import { getImages } from '@/lib/api';
+import { getImages, getPeriods } from '@/lib/api';
+
+// Hjælpefunktion til at håndtere DetailSection content
+const getLocalizedContent = (content: DetailSection['content'], language: 'da' | 'en' | 'pt'): string => {
+  if (typeof content === 'string') {
+    return content;
+  } else if (Array.isArray(content)) {
+    return content.join(', ');
+  } else {
+    return content[language];
+  }
+};
 
 // Lokaliserede tekster
 const translations = {
@@ -46,6 +57,7 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
   const [selectedLanguage, setSelectedLanguage] = useLanguage(initialLanguage);
   const [isFavorite, setIsFavorite] = useState(false);
   const [siteImages, setSiteImages] = useState<Image[]>([]);
+  const [sitePeriods, setSitePeriods] = useState<Period[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch images when component mounts
@@ -65,23 +77,33 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
     fetchImages();
   }, [site.images]);
 
-  // Helper function to get translations
+  // Fetch periods when component mounts
+  useEffect(() => {
+    const fetchPeriods = async () => {
+      try {
+        const allPeriods = await getPeriods();
+        const relevantPeriods = allPeriods.filter(p => site.periods.includes(p.id));
+        setSitePeriods(relevantPeriods);
+      } catch (error) {
+        console.error('Error fetching periods:', error);
+      }
+    };
+
+    if (site.periods && site.periods.length > 0) {
+      fetchPeriods();
+    }
+  }, [site.periods]);
+
   const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
 
   const mainImage = site.thumbnailImage ? siteImages.find(img => img.id === site.thumbnailImage) : null;
-  
-  console.log('Site detail sections:', site.detailedInfo?.sections);
-  
+
   // Find the text content section if it exists
   const textContentSection = site.detailedInfo?.sections?.find(
     section => section.type === 'text'
   );
 
-  console.log('Found text section:', textContentSection);
-  
   const detailText = textContentSection?.content;
-
-  console.log('Detail text:', detailText);
 
   // Get all images for the gallery
   const galleryImages = siteImages.filter(img => img.id !== site.thumbnailImage);
@@ -167,12 +189,12 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
         <div className="p-4 space-y-4">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-2xl font-bold" style={{ color: colors.text.dark }}>
+              <h2 className="text-2xl font-semibold">
                 {site.name[selectedLanguage]}
               </h2>
-              {site.periods && site.periods.length > 0 && (
+              {sitePeriods.length > 0 && (
                 <PeriodBadge 
-                  period={site.periods[0]} 
+                  period={sitePeriods[0]} 
                   selectedLanguage={selectedLanguage}
                   className="mt-1"
                 />
@@ -216,7 +238,7 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
                     className="whitespace-pre-line"
                     style={{ color: colors.text.muted }}
                   >
-                    {detailText[selectedLanguage]}
+                    {getLocalizedContent(detailText, selectedLanguage)}
                   </p>
                 )}
                 {!detailText && (

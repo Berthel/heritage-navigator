@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import { Period, getLocalizedField } from "@/types/models";
 
 interface PeriodBadgeProps {
@@ -13,9 +12,7 @@ export const PeriodBadge = ({ period, selectedLanguage, className = '' }: Period
   const localizedName = getLocalizedField(period.name, selectedLanguage);
 
   return (
-    <motion.div
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
+    <div
       className={`
         inline-flex items-center rounded-full px-3 py-1 text-sm font-medium
         ${className}
@@ -26,6 +23,6 @@ export const PeriodBadge = ({ period, selectedLanguage, className = '' }: Period
       }}
     >
       {localizedName}
-    </motion.div>
+    </div>
   );
 };

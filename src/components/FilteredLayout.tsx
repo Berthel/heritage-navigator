@@ -3,7 +3,6 @@
 import { Period, getLocalizedField, HeritageSite, City } from '@/types/models';
 import { X } from 'lucide-react';
 import SiteList from './SiteList';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface FilteredLayoutProps {
   selectedPeriod: Period | null;
@@ -46,51 +45,44 @@ export default function FilteredLayout({
     <div className="flex flex-col h-full">
       {children}
       {selectedPeriod && (
-        <AnimatePresence>
-          <motion.div 
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -20, opacity: 0 }}
-            className="bg-white border-b"
-          >
-            {/* Filter header */}
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: selectedPeriod.color }}
-                    />
-                    <span className="font-medium">
-                      {getLocalizedField(selectedPeriod.name, selectedLanguage)}
+        <div className="bg-white border-b">
+          {/* Filter header */}
+          <div className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: selectedPeriod.color }}
+                  />
+                  <span className="font-medium">
+                    {getLocalizedField(selectedPeriod.name, selectedLanguage)}
+                  </span>
+                  {yearText && (
+                    <span className="text-sm text-gray-500">
+                      ({yearText})
                     </span>
-                    {yearText && (
-                      <span className="text-sm text-gray-500">
-                        ({yearText})
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    {sites.length} {resultText[selectedLanguage]}
-                  </p>
+                  )}
                 </div>
-                <button
-                  onClick={onClearFilter}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                  aria-label="Ryd filter"
-                >
-                  <X size={20} />
-                </button>
+                <p className="text-sm text-gray-600">
+                  {sites.length} {resultText[selectedLanguage]}
+                </p>
               </div>
-              
-              {/* Period description */}
-              <p className="text-sm text-gray-600 mt-2">
-                {getLocalizedField(selectedPeriod.description, selectedLanguage)}
-              </p>
+              <button
+                onClick={onClearFilter}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                aria-label="Ryd filter"
+              >
+                <X size={20} />
+              </button>
             </div>
-          </motion.div>
-        </AnimatePresence>
+            
+            {/* Period description */}
+            <p className="text-sm text-gray-600 mt-2">
+              {getLocalizedField(selectedPeriod.description, selectedLanguage)}
+            </p>
+          </div>
+        </div>
       )}
       {/* Content */}
       {!children && (
