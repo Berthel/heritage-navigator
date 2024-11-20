@@ -126,15 +126,7 @@ export default function SiteDetails({ site }: SiteDetailsProps) {
       </main>
 
       <footer className="border-t bg-white p-4 safe-area-bottom">
-        <div className="flex justify-between items-center max-w-md mx-auto">
-          <Button 
-            variant="ghost" 
-            onClick={() => window.history.back()}
-            style={{ color: colors.text.dark }}
-          >
-            <Map className="w-5 h-5 mr-2" />
-            <span className="text-sm">Tilbage til kort</span>
-          </Button>
+        <div className="flex justify-center items-center max-w-md mx-auto">
           <Button 
             variant="ghost"
             onClick={handleShare}
