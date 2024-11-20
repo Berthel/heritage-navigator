@@ -5,16 +5,17 @@ import { ArrowLeft, Share2, Heart, Clock, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import AppHeader from './AppHeader';
-import { HeritageSite, LocalizedField } from '@/types/models';
+import { HeritageSite, LocalizedField, City } from '@/types/models';
 import { colors } from '@/styles/theme';
 import Image from 'next/image';
 import { PeriodBadge } from './PeriodBadge';
 
 interface SiteDetailsProps {
   site: HeritageSite;
+  city: City;
 }
 
-export default function SiteDetails({ site }: SiteDetailsProps) {
+export default function SiteDetails({ site, city }: SiteDetailsProps) {
   const [selectedLanguage, setSelectedLanguage] = useState<'da' | 'en' | 'pt'>('da');
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -41,6 +42,7 @@ export default function SiteDetails({ site }: SiteDetailsProps) {
       <AppHeader 
         selectedLanguage={selectedLanguage}
         onLanguageChange={setSelectedLanguage}
+        city={city}
       />
 
       <main className="flex-1 overflow-auto pt-[72px]">

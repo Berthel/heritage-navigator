@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Map as MapIcon, List, Clock, Heart, Settings, ChevronUp } from 'lucide-react';
-import { HeritageSite, Period } from '@/types/models';
+import { HeritageSite, Period, City } from '@/types/models';
 import dynamic from 'next/dynamic';
 import SiteList from './SiteList';
 import AppHeader from './AppHeader';
@@ -23,12 +23,14 @@ interface MobileLayoutProps {
   sites: HeritageSite[];
   selectedLanguage: 'da' | 'en' | 'pt';
   onLanguageChange: (language: 'da' | 'en' | 'pt') => void;
+  city: City;
 }
 
 export default function MobileLayout({ 
   sites, 
   selectedLanguage,
-  onLanguageChange 
+  onLanguageChange,
+  city
 }: MobileLayoutProps) {
   const [view, setView] = useState<'map' | 'list'>('map');
   const [expanded, setExpanded] = useState(false);
@@ -79,6 +81,7 @@ export default function MobileLayout({
       <AppHeader 
         selectedLanguage={selectedLanguage}
         onLanguageChange={onLanguageChange}
+        city={city}
       />
 
       {/* Main Content */}
@@ -101,6 +104,7 @@ export default function MobileLayout({
                     sites={filteredSites} 
                     activeSiteId={activeSiteId} 
                     selectedLanguage={selectedLanguage}
+                    city={city}
                   />
                   <div className="absolute bottom-4 right-4 flex flex-col gap-2">
                     <button 

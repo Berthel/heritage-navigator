@@ -3,13 +3,15 @@
 import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import { colors } from '@/styles/theme';
+import { City, getLocalizedField } from '@/types/models';
 
 interface AppHeaderProps {
   selectedLanguage: 'da' | 'en' | 'pt';
   onLanguageChange: (language: 'da' | 'en' | 'pt') => void;
+  city: City;
 }
 
-export default function AppHeader({ selectedLanguage, onLanguageChange }: AppHeaderProps) {
+export default function AppHeader({ selectedLanguage, onLanguageChange, city }: AppHeaderProps) {
   return (
     <header 
       className="px-4 py-3 fixed top-0 w-full z-50"
@@ -35,7 +37,7 @@ export default function AppHeader({ selectedLanguage, onLanguageChange }: AppHea
               Heritage Navigator
             </h1>
             <h2 className="text-sm" style={{ color: colors.secondary }}>
-              Tavira
+              {getLocalizedField(city.name, selectedLanguage)}
             </h2>
           </div>
         </div>

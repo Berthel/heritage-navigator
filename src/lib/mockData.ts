@@ -1,4 +1,4 @@
-import { HeritageSite, Period, Image, OpeningHours, Tag } from '@/types/models';
+import { HeritageSite, Period, Image, OpeningHours, Tag, City } from '@/types/models';
 
 const mockPeriods: Period[] = [
   {
@@ -172,9 +172,49 @@ const summerOpeningHours: OpeningHours = {
   ]
 };
 
+export const mockCities: City[] = [
+  {
+    id: 'tavira',
+    name: {
+      da: 'Tavira',
+      en: 'Tavira',
+      pt: 'Tavira'
+    },
+    description: {
+      da: 'En charmerende historisk by i Algarve, Portugal, kendt for sin rige kulturarv og arkitektur',
+      en: 'A charming historical town in Algarve, Portugal, known for its rich cultural heritage and architecture',
+      pt: 'Uma encantadora cidade histórica no Algarve, Portugal, conhecida pelo seu rico património cultural e arquitectura'
+    },
+    country: 'Portugal',
+    region: 'Algarve',
+    location: {
+      latitude: 37.1283,
+      longitude: -7.6506
+    },
+    bounds: {
+      northeast: {
+        latitude: 37.1383,
+        longitude: -7.6406
+      },
+      southwest: {
+        latitude: 37.1183,
+        longitude: -7.6606
+      }
+    },
+    defaultZoom: 15,
+    primaryImage: 'tavira-aerial',  // Reference til et image ID
+    images: [],  // Ville normalt indeholde byens overordnede billeder
+    historicalPeriods: mockPeriods,
+    tags: [],
+    status: 'active',
+    lastUpdated: '2024-01-15T12:00:00Z'
+  }
+];
+
 export const mockSites: HeritageSite[] = [
   {
     id: 'tavira-castle',
+    cityId: 'tavira',
     name: {
       da: 'Tavira Slot',
       en: 'Tavira Castle',
@@ -228,6 +268,7 @@ export const mockSites: HeritageSite[] = [
   },
   {
     id: 'roman-bridge',
+    cityId: 'tavira',
     name: {
       da: 'Romersk Bro',
       en: 'Roman Bridge',
@@ -290,6 +331,7 @@ export const mockSites: HeritageSite[] = [
   },
   {
     id: 'islamic-museum',
+    cityId: 'tavira',
     name: {
       da: 'Islamisk Museum',
       en: 'Islamic Museum',

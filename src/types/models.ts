@@ -70,8 +70,29 @@ export interface Tag {
   type?: string;
 }
 
+export interface City {
+  id: string;
+  name: LocalizedField;
+  description: LocalizedField;
+  country: string;
+  region?: string;
+  location: Location;
+  bounds: {
+    northeast: Location;
+    southwest: Location;
+  };
+  defaultZoom: number;
+  primaryImage: string;
+  images: Image[];
+  historicalPeriods: Period[];  // De perioder der er relevante for denne by
+  tags: Tag[];                  // Tags der er specifikke for denne by
+  status: 'active' | 'coming_soon' | 'inactive';
+  lastUpdated: string;
+}
+
 export interface HeritageSite {
   id: string;
+  cityId: string;           // Reference til byen
   name: LocalizedField;
   description: LocalizedField;
   thumbnailImage: string;    // ID på hovedbilledet til kort visning

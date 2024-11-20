@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { HeritageSite, getLocalizedField } from '@/types/models';
+import { HeritageSite, getLocalizedField, City } from '@/types/models';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useGeolocation } from '@/hooks/useGeolocation';
@@ -37,30 +37,31 @@ interface MapProps {
   zoom?: number;
   activeSiteId?: string;
   selectedLanguage: string;
+  city: City;
 }
 
 // Center Control Component
-function CenterControl({ coordinates }: { coordinates: [number, number] | null }) {
+function CenterControl({ coordinates, city }: { coordinates: [number, number] | null, city: City }) {
   const map = useMap();
-  const TAVIRA_CENTER: [number, number] = [37.1283, -7.6506];
+  const CITY_CENTER: [number, number] = [city.location.latitude, city.location.longitude];
   const [isUserLocation, setIsUserLocation] = useState(false);
 
   const toggleCenter = () => {
     if (coordinates && isUserLocation) {
-      // If we're showing user location and coordinates are available, switch to Tavira
-      map.flyTo(TAVIRA_CENTER, map.getZoom(), {
+      // If we're showing user location and coordinates are available, switch to city center
+      map.flyTo(CITY_CENTER, map.getZoom(), {
         duration: 1.5
       });
       setIsUserLocation(false);
     } else if (coordinates) {
-      // If coordinates are available and we're showing Tavira, switch to user location
+      // If coordinates are available and we're showing city center, switch to user location
       map.flyTo(coordinates, map.getZoom(), {
         duration: 1.5
       });
       setIsUserLocation(true);
     } else {
-      // If no coordinates available, center on Tavira
-      map.flyTo(TAVIRA_CENTER, map.getZoom(), {
+      // If no coordinates available, center on city
+      map.flyTo(CITY_CENTER, map.getZoom(), {
         duration: 1.5
       });
     }
@@ -72,7 +73,7 @@ function CenterControl({ coordinates }: { coordinates: [number, number] | null }
         <button
           onClick={toggleCenter}
           className={`bg-white p-2 shadow-md rounded-lg m-2 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${!coordinates ? 'opacity-50' : ''}`}
-          title={isUserLocation ? "Vis Tavira centrum" : "Vis min position"}
+          title={isUserLocation ? `Vis ${getLocalizedField(city.name, 'da')} centrum` : "Vis min position"}
         >
           {isUserLocation ? (
             <MapPin className="w-6 h-6" />
@@ -87,10 +88,11 @@ function CenterControl({ coordinates }: { coordinates: [number, number] | null }
 
 export default function Map({ 
   sites = [], 
-  center = [37.1283, -7.6506], 
+  center,
   zoom = 15,
   activeSiteId,
-  selectedLanguage
+  selectedLanguage,
+  city
 }: MapProps) {
   const { coordinates, error, loading } = useGeolocation();
   const [mounted, setMounted] = useState(false);
@@ -110,10 +112,12 @@ export default function Map({
 
   if (!mounted) return null;
 
+  const defaultCenter: [number, number] = [city.location.latitude, city.location.longitude];
+
   return (
     <div className="w-full h-full relative">
       <MapContainer
-        center={center}
+        center={center || defaultCenter}
         zoom={zoom}
         className="w-full h-full"
       >
@@ -182,7 +186,7 @@ export default function Map({
             pathOptions={{ color: '#4CAF50', fillColor: '#4CAF50' }}
           />
         )}
-        <CenterControl coordinates={coordinates} />
+        <CenterControl coordinates={coordinates} city={city} />
       </MapContainer>
     </div>
   );
