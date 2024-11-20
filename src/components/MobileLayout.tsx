@@ -20,6 +20,40 @@ const MapComponent = dynamic(() => import('@/components/Map'), {
   ),
 });
 
+// Lokaliserede tekster
+const translations = {
+  list: {
+    da: 'Liste',
+    en: 'List',
+    pt: 'Lista'
+  },
+  map: {
+    da: 'Kort',
+    en: 'Map',
+    pt: 'Mapa'
+  },
+  period: {
+    da: 'Periode',
+    en: 'Period',
+    pt: 'Período'
+  },
+  favorites: {
+    da: 'Favoritter',
+    en: 'Favorites',
+    pt: 'Favoritos'
+  },
+  selectPeriod: {
+    da: 'Vælg periode',
+    en: 'Select period',
+    pt: 'Selecionar período'
+  },
+  close: {
+    da: 'Luk',
+    en: 'Close',
+    pt: 'Fechar'
+  }
+} as const;
+
 interface MobileLayoutProps {
   sites: HeritageSite[];
   selectedLanguage: 'da' | 'en' | 'pt';
@@ -41,6 +75,9 @@ export default function MobileLayout({
   const [selectedPeriodId, setSelectedPeriodId] = useState<string | null>(null);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const { coordinates } = useGeolocation();
+
+  // Helper function to get translations
+  const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
 
   // Udtræk unikke perioder fra sites
   const periods = useMemo(() => {
@@ -157,12 +194,12 @@ export default function MobileLayout({
             {view === 'map' ? (
               <>
                 <List size={20} />
-                <span className="text-xs">Liste</span>
+                <span className="text-xs">{t('list')}</span>
               </>
             ) : (
               <>
                 <MapIcon size={20} />
-                <span className="text-xs">Kort</span>
+                <span className="text-xs">{t('map')}</span>
               </>
             )}
           </button>
@@ -174,7 +211,7 @@ export default function MobileLayout({
             }`}
           >
             <Clock size={20} />
-            <span className="text-xs">Periode</span>
+            <span className="text-xs">{t('period')}</span>
           </button>
 
           <button 
@@ -184,7 +221,7 @@ export default function MobileLayout({
             }`}
           >
             <Heart size={20} />
-            <span className="text-xs">Favoritter</span>
+            <span className="text-xs">{t('favorites')}</span>
           </button>
         </div>
       </nav>
@@ -194,7 +231,7 @@ export default function MobileLayout({
         <div className="fixed inset-0 bg-black/50 z-50">
           <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl p-4">
             <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Vælg periode</h3>
+              <h3 className="text-lg font-semibold mb-2">{t('selectPeriod')}</h3>
               <PeriodFilter
                 periods={periods}
                 selectedPeriod={selectedPeriodId}
@@ -210,7 +247,7 @@ export default function MobileLayout({
               className="w-full"
               onClick={() => setShowPeriodFilter(false)}
             >
-              Luk
+              {t('close')}
             </Button>
           </div>
         </div>
