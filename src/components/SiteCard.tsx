@@ -85,7 +85,7 @@ export default function SiteCard({
       <div className="flex gap-4 p-4">
         {/* Thumbnail med periode indikator */}
         <div className="relative flex-shrink-0 w-[30vw] min-w-[100px] max-w-[120px]">
-          <div className="w-full aspect-[4/3] rounded-lg overflow-hidden relative bg-gray-100">
+          <div className="w-full aspect-[16/9] rounded-lg overflow-hidden relative bg-gray-100">
             {thumbnailUrl ? (
               <Image
                 src={thumbnailUrl}
