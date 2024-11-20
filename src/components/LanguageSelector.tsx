@@ -61,7 +61,7 @@ export function LanguageSelector({ selectedLanguage, onLanguageChange }: Languag
         ref={updateButtonRect}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="rounded-full px-2.5 py-1.5 flex items-center gap-1 transition-colors duration-200 hover:bg-white/20"
+        className="rounded-full px-2 py-1 flex items-center gap-1 transition-colors duration-200 hover:bg-white/20 text-sm"
         style={{ 
           color: colors.text.light,
           background: 'rgba(255, 255, 255, 0.1)'
@@ -80,11 +80,11 @@ export function LanguageSelector({ selectedLanguage, onLanguageChange }: Languag
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="rounded-lg shadow-lg overflow-hidden py-1 min-w-[120px]"
+              className="rounded-lg shadow-lg overflow-hidden py-0.5 min-w-[100px] text-sm"
               style={{ 
                 position: 'absolute',
                 top: buttonRect.bottom + 4,
-                left: Math.min(buttonRect.right - 120, window.innerWidth - 124),
+                left: Math.min(buttonRect.right - 100, window.innerWidth - 104),
                 background: colors.primary,
                 border: `1px solid ${colors.secondary}33`,
                 pointerEvents: 'auto'

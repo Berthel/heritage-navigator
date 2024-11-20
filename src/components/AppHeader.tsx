@@ -34,10 +34,10 @@ export default function AppHeader({ selectedLanguage, onLanguageChange, city }: 
             />
           </div>
           <div>
-            <h1 className="text-xl font-semibold" style={{ color: colors.text.light }}>
+            <h1 className="text-lg font-semibold" style={{ color: colors.text.light }}>
               Heritage Navigator
             </h1>
-            <h2 className="text-sm" style={{ color: colors.secondary }}>
+            <h2 className="text-xl" style={{ color: colors.secondary }}>
               {getLocalizedField(city.name, selectedLanguage)}
             </h2>
           </div>
