@@ -108,6 +108,7 @@ export interface HeritageSite {
   tags: Tag[];
   status: 'active' | 'temporary_closed' | 'permanently_closed';
   lastUpdated: string;
+  distance?: number;  // Distance in meters from user's location
 }
 
 // Hjælpefunktioner
