@@ -1,11 +1,13 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { mockSites, mockCities } from '@/lib/mockData';
 import SiteDetails from '@/components/SiteDetails';
 
 export default function SitePage() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const selectedLanguage = searchParams.get('lang') || 'da';
   const site = mockSites.find(site => site.id === params.id);
   const city = mockCities.find(city => city.id === site?.cityId);
 
@@ -13,5 +15,5 @@ export default function SitePage() {
     return <div>Site not found</div>;
   }
 
-  return <SiteDetails site={site} city={city} />;
+  return <SiteDetails site={site} city={city} initialLanguage={selectedLanguage} />;
 }

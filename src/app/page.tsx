@@ -2,10 +2,10 @@
 
 import { mockSites, mockCities } from '@/lib/mockData';
 import MobileLayout from '@/components/MobileLayout';
-import { useState } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function Home() {
-  const [selectedLanguage, setSelectedLanguage] = useState<'da' | 'en' | 'pt'>('da');
+  const [selectedLanguage, setSelectedLanguage] = useLanguage();
   const city = mockCities[0]; // For nu bruger vi bare den første by
 
   return (

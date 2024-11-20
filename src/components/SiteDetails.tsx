@@ -9,6 +9,7 @@ import { HeritageSite, LocalizedField, City } from '@/types/models';
 import { colors } from '@/styles/theme';
 import Image from 'next/image';
 import { PeriodBadge } from './PeriodBadge';
+import { useLanguage } from '@/hooks/useLanguage';
 
 // Lokaliserede tekster
 const translations = {
@@ -37,10 +38,11 @@ const translations = {
 interface SiteDetailsProps {
   site: HeritageSite;
   city: City;
+  initialLanguage?: 'da' | 'en' | 'pt';
 }
 
-export default function SiteDetails({ site, city }: SiteDetailsProps) {
-  const [selectedLanguage, setSelectedLanguage] = useState<'da' | 'en' | 'pt'>('da');
+export default function SiteDetails({ site, city, initialLanguage = 'da' }: SiteDetailsProps) {
+  const [selectedLanguage, setSelectedLanguage] = useLanguage(initialLanguage);
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Helper function to get translations

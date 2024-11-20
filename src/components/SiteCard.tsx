@@ -127,7 +127,7 @@ export default function SiteCard({
           </button>
         )}
         <Link 
-          href={`/site/${site.id}`}
+          href={`/site/${site.id}?lang=${selectedLanguage}`}
           className="text-blue-600 hover:underline ml-auto flex items-center gap-1"
         >
           {t('readMore')}
