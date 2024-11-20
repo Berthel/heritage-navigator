@@ -85,7 +85,7 @@ export default function SiteCard({
       <div className="p-4">
         <div className="flex gap-4">
           {/* Left column with thumbnail and meta info */}
-          <div className="w-[30vw] min-w-[100px] max-w-[120px] space-y-3">
+          <div className="shrink-0 w-[30vw] min-w-[100px] max-w-[120px] space-y-3">
             {/* Thumbnail med periode indikator */}
             <div className="relative">
               <div className="w-full aspect-[16/9] rounded-lg overflow-hidden relative bg-gray-100">
@@ -140,13 +140,13 @@ export default function SiteCard({
           </div>
 
           {/* Info sektion */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="font-medium text-gray-900 leading-tight">
                   {getLocalizedField(site.name, selectedLanguage)}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                <p className="text-sm text-gray-600 mt-1">
                   {getLocalizedField(site.description, selectedLanguage)}
                 </p>
               </div>
