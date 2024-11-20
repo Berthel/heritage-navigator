@@ -18,10 +18,11 @@ export default function AppHeader({ selectedLanguage, onLanguageChange, city }: 
       className="px-4 py-3 fixed top-0 w-full z-50"
       style={{ 
         background: `linear-gradient(to bottom, ${colors.primary}, ${colors.primary}ee)`,
-        borderBottom: `1px solid ${colors.secondary}33`
+        borderBottom: `1px solid ${colors.secondary}33`,
+        paddingTop: '0.5rem'
       }}
     >
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 relative animate-pulse">
             <Image
@@ -43,10 +44,12 @@ export default function AppHeader({ selectedLanguage, onLanguageChange, city }: 
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <LanguageSelector
-            selectedLanguage={selectedLanguage}
-            onLanguageChange={onLanguageChange}
-          />
+          <div className="mt-0.5">
+            <LanguageSelector
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={onLanguageChange}
+            />
+          </div>
           <button 
             className="p-2 rounded-full transition-colors duration-200 hover:bg-white/10"
             style={{ color: colors.text.light }}
