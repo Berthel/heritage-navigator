@@ -19,6 +19,12 @@ const languageNames: Record<Language, string> = {
   pt: 'Português'
 };
 
+const languageCodes: Record<Language, string> = {
+  da: 'DA',
+  en: 'EN',
+  pt: 'PT'
+};
+
 export function LanguageSelector({ selectedLanguage, onLanguageChange }: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
@@ -55,13 +61,13 @@ export function LanguageSelector({ selectedLanguage, onLanguageChange }: Languag
         ref={updateButtonRect}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="rounded-full px-3 py-1.5 flex items-center gap-1 transition-colors duration-200 hover:bg-white/20"
+        className="rounded-full px-2.5 py-1.5 flex items-center gap-1 transition-colors duration-200 hover:bg-white/20"
         style={{ 
           color: colors.text.light,
           background: 'rgba(255, 255, 255, 0.1)'
         }}
       >
-        {languageNames[selectedLanguage]}
+        {languageCodes[selectedLanguage]}
         <ChevronDown 
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
         />
@@ -78,7 +84,7 @@ export function LanguageSelector({ selectedLanguage, onLanguageChange }: Languag
               style={{ 
                 position: 'absolute',
                 top: buttonRect.bottom + 4,
-                left: buttonRect.right - 120,
+                left: Math.min(buttonRect.right - 120, window.innerWidth - 124),
                 background: colors.primary,
                 border: `1px solid ${colors.secondary}33`,
                 pointerEvents: 'auto'
