@@ -4,6 +4,7 @@ import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import { colors } from '@/styles/theme';
 import { City, getLocalizedField } from '@/types/models';
+import { LanguageSelector } from './LanguageSelector';
 
 interface AppHeaderProps {
   selectedLanguage: 'da' | 'en' | 'pt';
@@ -41,21 +42,11 @@ export default function AppHeader({ selectedLanguage, onLanguageChange, city }: 
             </h2>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <button 
-            className="rounded-full px-3 py-1.5 text-sm border transition-colors duration-200"
-            style={{ 
-              borderColor: colors.secondary,
-              color: colors.text.light,
-              background: 'transparent',
-            }}
-            onClick={() => {
-              const nextLang = selectedLanguage === 'da' ? 'en' : selectedLanguage === 'en' ? 'pt' : 'da';
-              onLanguageChange(nextLang);
-            }}
-          >
-            {selectedLanguage.toUpperCase()}
-          </button>
+        <div className="flex items-center gap-2">
+          <LanguageSelector
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={onLanguageChange}
+          />
           <button 
             className="p-2 rounded-full transition-colors duration-200 hover:bg-white/10"
             style={{ color: colors.text.light }}
