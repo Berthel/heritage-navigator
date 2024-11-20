@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import { colors } from './src/styles/theme'
 
 const config: Config = {
   content: [
@@ -8,6 +9,22 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: colors.primary,
+        secondary: colors.secondary,
+        accent: colors.accent,
+        'text-dark': colors.text.dark,
+        'text-light': colors.text.light,
+      },
+      animation: {
+        'spin-slow': 'spin-slow 10s linear infinite',
+      },
+      keyframes: {
+        'spin-slow': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
@@ -17,4 +34,5 @@ const config: Config = {
   },
   plugins: [],
 }
+
 export default config
