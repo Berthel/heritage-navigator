@@ -29,6 +29,11 @@ export function LanguageSelector({ selectedLanguage, onLanguageChange }: Languag
   const [isOpen, setIsOpen] = useState(false);
   const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Create portal container on mount
@@ -54,6 +59,13 @@ export function LanguageSelector({ selectedLanguage, onLanguageChange }: Languag
       setButtonRect(button.getBoundingClientRect());
     }
   };
+
+  // Undgå rendering før komponenten er mounted
+  if (!mounted) {
+    return (
+      <div className="w-8 h-8" /> // Placeholder med samme størrelse
+    );
+  }
 
   return (
     <div className="relative">
