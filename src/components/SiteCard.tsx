@@ -82,99 +82,104 @@ export default function SiteCard({
 
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-      <div className="flex gap-4 p-4">
-        {/* Thumbnail med periode indikator */}
-        <div className="relative flex-shrink-0 w-[30vw] min-w-[100px] max-w-[120px]">
-          <div className="w-full aspect-[16/9] rounded-lg overflow-hidden relative bg-gray-100">
-            {thumbnailUrl ? (
-              <Image
-                src={thumbnailUrl}
-                alt={getLocalizedField(site.name, selectedLanguage)}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400">
-                <span>No image</span>
+      <div className="p-4">
+        <div className="flex gap-4">
+          {/* Left column with thumbnail and meta info */}
+          <div className="w-[30vw] min-w-[100px] max-w-[120px] space-y-3">
+            {/* Thumbnail med periode indikator */}
+            <div className="relative">
+              <div className="w-full aspect-[16/9] rounded-lg overflow-hidden relative bg-gray-100">
+                {thumbnailUrl ? (
+                  <Image
+                    src={thumbnailUrl}
+                    alt={getLocalizedField(site.name, selectedLanguage)}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <span>No image</span>
+                  </div>
+                )}
               </div>
-            )}
+              {sitePeriods[0] && (
+                <div 
+                  className="absolute top-2 left-2 w-3 h-3 rounded-full"
+                  style={{ backgroundColor: sitePeriods[0].color }}
+                />
+              )}
+            </div>
+
+            {/* Meta information */}
+            <div className="space-y-2 text-sm text-gray-500">
+              {showDistance && site.distance !== undefined && (
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4" />
+                  <span>{formatDistance(site.distance, selectedLanguage)}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1">
+                <svg
+                  className={`w-4 h-4 ${isOpen ? 'text-green-600' : 'text-gray-600'}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span className={isOpen ? 'text-green-600' : 'text-gray-600'}>
+                  {isOpen ? t('openNow') : ''}
+                </span>
+              </div>
+            </div>
           </div>
-          {sitePeriods[0] && (
-            <div 
-              className="absolute top-2 left-2 w-3 h-3 rounded-full"
-              style={{ backgroundColor: sitePeriods[0].color }}
-            />
-          )}
+
+          {/* Info sektion */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-medium text-gray-900 leading-tight">
+                  {getLocalizedField(site.name, selectedLanguage)}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                  {getLocalizedField(site.description, selectedLanguage)}
+                </p>
+              </div>
+              {onFavorite && (
+                <button
+                  onClick={() => onFavorite(site.id)}
+                  className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Info sektion */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h3 className="font-medium text-gray-900 leading-tight">
-                {getLocalizedField(site.name, selectedLanguage)}
-              </h3>
-              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                {getLocalizedField(site.description, selectedLanguage)}
-              </p>
-            </div>
-            {onFavorite && (
-              <button
-                onClick={() => onFavorite(site.id)}
-                className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
-              </button>
-            )}
-          </div>
-
-          {/* Meta information */}
-          <div className="flex flex-wrap gap-x-4 gap-y-2 mt-3 text-sm text-gray-500">
-            {showDistance && site.distance !== undefined && (
-              <div className="flex items-center gap-1">
-                <MapPin className="w-4 h-4" />
-                <span>{formatDistance(site.distance, selectedLanguage)}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-1">
-              <svg
-                className={`w-4 h-4 ${isOpen ? 'text-green-600' : 'text-gray-600'}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span className={isOpen ? 'text-green-600' : 'text-gray-600'}>
-                {isOpen ? t('openNow') : ''}
-              </span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-4 mt-2">
-            {onSiteSelect && (
-              <button 
-                onClick={() => onSiteSelect(site.id)}
-                className="text-blue-600 flex items-center hover:underline"
-              >
-                <span className="mr-1">{t('showOnMap')}</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            )}
-            <Link
-              href={`/site/${site.id}`}
-              className="text-blue-600 flex items-center hover:underline ml-auto"
+        {/* Actions */}
+        <div className="flex items-center justify-between mt-4">
+          {onSiteSelect && (
+            <button 
+              onClick={() => onSiteSelect(site.id)}
+              className="text-blue-600 flex items-center hover:underline"
             >
-              <span className="mr-1">{t('readMore')}</span>
+              <span className="mr-1">{t('showOnMap')}</span>
               <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
+            </button>
+          )}
+          <Link
+            href={`/site/${site.id}`}
+            className="text-blue-600 flex items-center hover:underline"
+          >
+            <span className="mr-1">{t('readMore')}</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </div>
