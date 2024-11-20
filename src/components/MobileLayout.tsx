@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Map as MapIcon, List, Clock, Heart, Settings, ChevronUp } from 'lucide-react';
 import { HeritageSite, Period, City } from '@/types/models';
 import dynamic from 'next/dynamic';
@@ -11,6 +11,7 @@ import { useGeolocation } from '@/hooks/useGeolocation';
 import PeriodFilter from './PeriodFilter';
 import FilteredLayout from './FilteredLayout';
 import { Button } from '@/components/ui/button';
+import { getPeriods } from '@/lib/api';
 
 // Dynamically import Map component to avoid SSR issues
 const MapComponent = dynamic(() => import('@/components/Map'), {
@@ -75,22 +76,40 @@ export default function MobileLayout({
   const [selectedPeriodId, setSelectedPeriodId] = useState<string | null>(null);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const { coordinates } = useGeolocation();
+  const [allPeriods, setAllPeriods] = useState<Period[]>([]);
+
+  // Fetch periods when component mounts
+  useEffect(() => {
+    const fetchPeriods = async () => {
+      try {
+        const periodsData = await getPeriods();
+        setAllPeriods(periodsData);
+      } catch (error) {
+        console.error('Error fetching periods:', error);
+      }
+    };
+    fetchPeriods();
+  }, []);
 
   // Helper function to get translations
   const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
 
-  // Udtræk unikke perioder fra sites
+  // Udtræk unikke perioder fra sites baseret på deres periode IDs
   const periods = useMemo(() => {
-    const uniquePeriods = new Map<string, Period>();
+    const uniquePeriodIds = new Set<string>();
     sites.forEach(site => {
-      site.periods.forEach(period => {
-        if (!uniquePeriods.has(period.id)) {
-          uniquePeriods.set(period.id, period);
-        }
+      site.periods.forEach(periodId => {
+        uniquePeriodIds.add(periodId);
       });
     });
-    return Array.from(uniquePeriods.values()).sort((a, b) => a.order - b.order);
-  }, [sites]);
+    
+    // Find de faktiske periode-objekter fra allPeriods
+    const relevantPeriods = allPeriods.filter(period => 
+      uniquePeriodIds.has(period.id)
+    );
+    
+    return relevantPeriods.sort((a, b) => a.order - b.order);
+  }, [sites, allPeriods]);
 
   // Find den valgte periode
   const selectedPeriod = useMemo(() => {
@@ -102,7 +121,7 @@ export default function MobileLayout({
   const filteredSites = useMemo(() => {
     return sites.filter(site => {
       const matchesFavorites = !showOnlyFavorites || isFavorite(site.id);
-      const matchesPeriod = !selectedPeriodId || site.periods.some(p => p.id === selectedPeriodId);
+      const matchesPeriod = !selectedPeriodId || site.periods.some(p => p === selectedPeriodId);
       return matchesFavorites && matchesPeriod;
     });
   }, [sites, showOnlyFavorites, isFavorite, selectedPeriodId]);
