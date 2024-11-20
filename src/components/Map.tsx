@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { HeritageSite, getLocalizedField, City } from '@/types/models';
+import { HeritageSite, getLocalizedField, City, Period } from '@/types/models';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useGeolocation } from '@/hooks/useGeolocation';
@@ -94,6 +94,8 @@ export default function Map({
   selectedLanguage,
   city
 }: MapProps) {
+  const [map, setMap] = useState<L.Map | null>(null);
+  const [periods, setPeriods] = useState<Period[]>([]);
   const { coordinates, error, loading } = useGeolocation();
   const [mounted, setMounted] = useState(false);
 
@@ -110,7 +112,26 @@ export default function Map({
     });
   }, []);
 
-  if (!mounted) return null;
+  useEffect(() => {
+    // Fetch periods when component mounts
+    const fetchPeriods = async () => {
+      try {
+        const periodsData = await getPeriods();
+        setPeriods(periodsData);
+      } catch (error) {
+        console.error('Error fetching periods:', error);
+      }
+    };
+    fetchPeriods();
+  }, []);
+
+  useEffect(() => {
+    if (map && center) {
+      map.setView(center, zoom);
+    }
+  }, [map, center, zoom]);
+
+  if (!mounted || !sites) return null;
 
   const defaultCenter: [number, number] = [city.location.latitude, city.location.longitude];
 
@@ -120,6 +141,7 @@ export default function Map({
         center={center || defaultCenter}
         zoom={zoom}
         className="w-full h-full"
+        ref={setMap}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -127,7 +149,7 @@ export default function Map({
         />
         
         {sites.map((site) => {
-          const primaryPeriod = site.periods.find(p => p.id === site.primaryPeriod);
+          const primaryPeriod = periods.find(p => p.id === site.primaryPeriod);
           if (!primaryPeriod) return null;
 
           const isActive = site.id === activeSiteId;
