@@ -5,9 +5,9 @@ import { ArrowLeft, Share2, Heart, Clock, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import AppHeader from './AppHeader';
-import { HeritageSite, LocalizedField, City } from '@/types/models';
+import { HeritageSite, LocalizedField, City, Image } from '@/types/models';
 import { colors } from '@/styles/theme';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { PeriodBadge } from './PeriodBadge';
 import { useLanguage } from '@/hooks/useLanguage';
 
@@ -41,12 +41,41 @@ interface SiteDetailsProps {
   initialLanguage?: 'da' | 'en' | 'pt';
 }
 
-export default function SiteDetails({ site, city, initialLanguage = 'da' }: SiteDetailsProps) {
+const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) => {
   const [selectedLanguage, setSelectedLanguage] = useLanguage(initialLanguage);
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Helper function to get translations
   const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
+
+  const mainImage = site.images.find(img => img.id === site.thumbnailImage);
+  
+  console.log('Site detail sections:', site.detailedInfo?.sections);
+  
+  // Find the text content section if it exists
+  const textContentSection = site.detailedInfo?.sections?.find(
+    section => section.type === 'text'
+  );
+
+  console.log('Found text section:', textContentSection);
+  
+  const detailText = textContentSection?.content;
+
+  console.log('Detail text:', detailText);
+
+  // Get all images for the gallery
+  const galleryImages = site.images.filter(img => img.id !== site.thumbnailImage);
+
+  // State for modal
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  // Helper function to safely get alt text
+  const getImageAlt = (image: Image) => {
+    if (!image.alt || !image.alt[selectedLanguage]) {
+      return site.name[selectedLanguage]; // Fallback to site name if no alt text
+    }
+    return image.alt[selectedLanguage];
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -62,10 +91,6 @@ export default function SiteDetails({ site, city, initialLanguage = 'da' }: Site
     }
   };
 
-  const mainImage = site.images.find(img => img.id === site.thumbnailImage);
-  const detailTextSection = site.detailedInfo.sections.find(section => section.type === 'text');
-  const detailText = detailTextSection?.content as LocalizedField | undefined;
-
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <AppHeader 
@@ -78,9 +103,9 @@ export default function SiteDetails({ site, city, initialLanguage = 'da' }: Site
         <div className="relative">
           {mainImage && (
             <div className="w-full relative aspect-video">
-              <Image
+              <NextImage
                 src={mainImage.url}
-                alt={mainImage.alt[selectedLanguage]}
+                alt={getImageAlt(mainImage)}
                 fill
                 className="object-cover"
                 sizes="100vw"
@@ -145,16 +170,78 @@ export default function SiteDetails({ site, city, initialLanguage = 'da' }: Site
               <h3 className="font-semibold mb-2" style={{ color: colors.text.dark }}>
                 {t('about')}
               </h3>
-              <p 
-                className="whitespace-pre-line"
-                style={{ color: colors.text.muted }}
-              >
-                {detailText?.[selectedLanguage]}
-              </p>
+              <div className="space-y-4">
+                {detailText && (
+                  <p 
+                    className="whitespace-pre-line"
+                    style={{ color: colors.text.muted }}
+                  >
+                    {detailText[selectedLanguage]}
+                  </p>
+                )}
+                {!detailText && (
+                  <p 
+                    className="whitespace-pre-line"
+                    style={{ color: colors.text.muted }}
+                  >
+                    {site.description[selectedLanguage]}
+                  </p>
+                )}
+              </div>
             </CardContent>
           </Card>
 
-          {/* TODO: Add image gallery */}
+          {/* Image Gallery */}
+          {galleryImages.length > 0 && (
+            <Card>
+              <CardContent className="p-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {galleryImages.map((image, index) => (
+                    <div 
+                      key={image.id} 
+                      className="relative aspect-[4/3] cursor-pointer"
+                      onClick={() => setSelectedImageIndex(index)}
+                    >
+                      <NextImage
+                        src={image.url}
+                        alt={getImageAlt(image)}
+                        fill
+                        className="object-cover rounded-lg"
+                        sizes="(max-width: 768px) 50vw, 33vw"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Image Modal */}
+          {selectedImageIndex !== null && (
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+              onClick={() => setSelectedImageIndex(null)}
+            >
+              <div className="relative w-full max-w-4xl aspect-[4/3]">
+                <NextImage
+                  src={galleryImages[selectedImageIndex].url}
+                  alt={getImageAlt(galleryImages[selectedImageIndex])}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                />
+              </div>
+              <button 
+                className="absolute top-4 right-4 text-white p-2 hover:bg-white/10 rounded-full"
+                onClick={() => setSelectedImageIndex(null)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           {/* TODO: Add opening hours details */}
           {/* TODO: Add accessibility information */}
         </div>
@@ -175,3 +262,5 @@ export default function SiteDetails({ site, city, initialLanguage = 'da' }: Site
     </div>
   );
 }
+
+export default SiteDetails;

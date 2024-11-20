@@ -50,7 +50,10 @@ export function LanguageSelector({ selectedLanguage, onLanguageChange }: Languag
 
     // Cleanup on unmount
     return () => {
-      document.body.removeChild(container);
+      // Check if container is still in document.body before removing
+      if (document.body.contains(container)) {
+        document.body.removeChild(container);
+      }
     };
   }, []);
 

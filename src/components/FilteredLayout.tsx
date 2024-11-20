@@ -1,4 +1,6 @@
-import { Period, getLocalizedField, HeritageSite } from '@/types/models';
+'use client';
+
+import { Period, getLocalizedField, HeritageSite, City } from '@/types/models';
 import { X } from 'lucide-react';
 import SiteList from './SiteList';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,6 +15,7 @@ interface FilteredLayoutProps {
   isFavorite?: (siteId: string) => boolean;
   userLocation?: { latitude: number; longitude: number } | null;
   children?: React.ReactNode;
+  city: City;
 }
 
 export default function FilteredLayout({
@@ -24,7 +27,8 @@ export default function FilteredLayout({
   onFavorite,
   isFavorite,
   userLocation,
-  children
+  children,
+  city
 }: FilteredLayoutProps) {
   // Lokaliserede tekster
   const resultText = {

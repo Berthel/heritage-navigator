@@ -46,7 +46,7 @@ export default function SiteCard({
   const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
   const isOpen = true; // TODO: Implementer åbningstider
   const thumbnailUrl = getImageForContext(site.images, site.thumbnailImage || '', 'thumbnail');
-  const primaryPeriod = site.periods.find(p => p.id === site.primaryPeriod);
+  const primaryPeriod = site.periods?.find(p => p.id === site.primaryPeriod);
 
   return (
     <motion.div 

@@ -1,25 +1,57 @@
-'use client';
-
-import { useParams, useSearchParams } from 'next/navigation';
-import { mockSites, mockCities } from '@/lib/mockData';
-import SiteDetails from '@/components/SiteDetails';
+import { getCities, getHeritageSites } from '@/lib/api';
+import SiteClient from '@/components/SiteClient';
 
 // Type guard to validate language parameter
-function isValidLanguage(lang: string | null): lang is 'da' | 'en' | 'pt' {
+function isValidLanguage(lang: string | undefined): lang is 'da' | 'en' | 'pt' {
   return lang === 'da' || lang === 'en' || lang === 'pt';
 }
 
-export default function SitePage() {
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const langParam = searchParams.get('lang');
-  const selectedLanguage = isValidLanguage(langParam) ? langParam : 'da';
-  const site = mockSites.find(site => site.id === params.id);
-  const city = mockCities.find(city => city.id === site?.cityId);
+interface Props {
+  params: {
+    id: string;
+  };
+  searchParams: {
+    lang?: string;
+  };
+}
 
-  if (!site || !city) {
-    return <div>Site not found</div>;
+export default async function SitePage({ params, searchParams }: Props) {
+  try {
+    const selectedLanguage = isValidLanguage(searchParams.lang) ? searchParams.lang : 'da';
+
+    // Hent data fra Supabase
+    console.log('Fetching data for site page...');
+    const cities = await getCities();
+    console.log('Found cities:', cities.map(c => c.id));
+    const sites = await getHeritageSites(cities[0].id);
+    console.log('Found sites:', sites.map(s => ({ id: s.id, sections: s.detailedInfo?.sections?.length })));
+    const site = sites.find(s => s.id === params.id);
+    console.log('Selected site:', site?.id, 'with sections:', site?.detailedInfo?.sections);
+
+    if (!site) {
+      return (
+        <main>
+          <div className="p-4">
+            <h1 className="text-2xl font-bold text-red-600">Site not found</h1>
+            <p className="mt-2">Kunne ikke finde den ønskede seværdighed.</p>
+          </div>
+        </main>
+      );
+    }
+
+    return <SiteClient site={site} city={cities[0]} initialLanguage={selectedLanguage} />;
+  } catch (error) {
+    console.error('Error loading site:', error);
+    return (
+      <main>
+        <div className="p-4">
+          <h1 className="text-2xl font-bold text-red-600">Error</h1>
+          <p className="mt-2">Der skete en fejl ved indlæsning af seværdigheden. Prøv at genindlæse siden.</p>
+          <pre className="mt-4 p-4 bg-gray-100 rounded overflow-auto">
+            {JSON.stringify(error, null, 2)}
+          </pre>
+        </div>
+      </main>
+    );
   }
-
-  return <SiteDetails site={site} city={city} initialLanguage={selectedLanguage} />;
 }
