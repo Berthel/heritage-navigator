@@ -10,6 +10,30 @@ import { colors } from '@/styles/theme';
 import Image from 'next/image';
 import { PeriodBadge } from './PeriodBadge';
 
+// Lokaliserede tekster
+const translations = {
+  back: {
+    da: 'Tilbage',
+    en: 'Back',
+    pt: 'Voltar'
+  },
+  openNow: {
+    da: 'Åben nu',
+    en: 'Open now',
+    pt: 'Aberto agora'
+  },
+  about: {
+    da: 'Om stedet',
+    en: 'About',
+    pt: 'Sobre'
+  },
+  shareLocation: {
+    da: 'Del lokation',
+    en: 'Share location',
+    pt: 'Compartilhar localização'
+  }
+} as const;
+
 interface SiteDetailsProps {
   site: HeritageSite;
   city: City;
@@ -18,6 +42,9 @@ interface SiteDetailsProps {
 export default function SiteDetails({ site, city }: SiteDetailsProps) {
   const [selectedLanguage, setSelectedLanguage] = useState<'da' | 'en' | 'pt'>('da');
   const [isFavorite, setIsFavorite] = useState(false);
+
+  // Helper function to get translations
+  const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -66,7 +93,7 @@ export default function SiteDetails({ site, city }: SiteDetailsProps) {
             onClick={() => window.history.back()}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Tilbage
+            {t('back')}
           </Button>
         </div>
 
@@ -99,7 +126,7 @@ export default function SiteDetails({ site, city }: SiteDetailsProps) {
             {site.openingHours?.[0] && (
               <span className="flex items-center text-green-600">
                 <Clock className="w-4 h-4 mr-1" />
-                Åben nu
+                {t('openNow')}
               </span>
             )}
             {site.location && (
@@ -114,7 +141,7 @@ export default function SiteDetails({ site, city }: SiteDetailsProps) {
           <Card>
             <CardContent className="p-4">
               <h3 className="font-semibold mb-2" style={{ color: colors.text.dark }}>
-                Om stedet
+                {t('about')}
               </h3>
               <p 
                 className="whitespace-pre-line"
@@ -139,7 +166,7 @@ export default function SiteDetails({ site, city }: SiteDetailsProps) {
             style={{ color: colors.text.dark }}
           >
             <Share2 className="w-5 h-5 mr-2" />
-            <span className="text-sm">Del lokation</span>
+            <span className="text-sm">{t('shareLocation')}</span>
           </Button>
         </div>
       </footer>
