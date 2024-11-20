@@ -1,5 +1,6 @@
 import { HeritageSite } from '@/types/models';
 import SiteCard from './SiteCard';
+import { calculateDistance } from '@/utils/distance';
 
 interface SiteListProps {
   sites: HeritageSite[];
@@ -24,19 +25,32 @@ export default function SiteList({
     ? sites.filter(site => isFavorite(site.id))
     : sites;
 
+  // Calculate distances for each site if user location is available
+  const sitesWithDistance = filteredSites.map(site => {
+    if (userLocation && site.location) {
+      const distance = calculateDistance(
+        userLocation.latitude,
+        userLocation.longitude,
+        site.location.latitude,
+        site.location.longitude
+      );
+      return { ...site, distance };
+    }
+    return site;
+  });
+
   return (
     <div className="w-full max-w-2xl p-4">
       <div className="space-y-4">
-        {filteredSites.map((site) => (
+        {sitesWithDistance.map((site) => (
           <SiteCard
             key={site.id}
             site={site}
             selectedLanguage={selectedLanguage}
-            onShowOnMap={() => onSiteSelect?.(site.id)}
-            onReadMore={() => onSiteSelect?.(site.id)}
-            onFavorite={onFavorite}
+            onSiteSelect={onSiteSelect ? () => onSiteSelect(site.id) : undefined}
+            onFavorite={() => onFavorite(site.id)}
             isFavorite={isFavorite(site.id)}
-            userLocation={userLocation}
+            showDistance={!!userLocation}
           />
         ))}
       </div>

@@ -97,7 +97,7 @@ export default function SiteDetails({ site, city }: SiteDetailsProps) {
 
           <div className="flex gap-4 text-sm" style={{ color: colors.text.muted }}>
             {site.openingHours?.[0] && (
-              <span className="flex items-center">
+              <span className="flex items-center text-green-600">
                 <Clock className="w-4 h-4 mr-1" />
                 Åben nu
               </span>
