@@ -2,12 +2,12 @@
 
 import { Clock, MapPin, Heart, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { HeritageSite, getLocalizedField } from '@/types/models';
+import { HeritageSite, Period, getLocalizedField } from '@/types/models';
 import { formatDistance } from '@/utils/formatters';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { getImages } from '@/lib/api';
+import { getImages, getPeriods } from '@/lib/api';
 
 interface SiteCardProps {
   site: HeritageSite;
@@ -46,6 +46,7 @@ export default function SiteCard({
   showDistance = true
 }: SiteCardProps) {
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
+  const [primaryPeriodData, setPrimaryPeriodData] = useState<Period | null>(null);
 
   useEffect(() => {
     const fetchThumbnail = async () => {
@@ -65,9 +66,26 @@ export default function SiteCard({
     }
   }, [site.thumbnailImage]);
 
+  useEffect(() => {
+    const fetchPeriodData = async () => {
+      try {
+        const periods = await getPeriods();
+        const period = periods.find(p => p.id === site.primaryPeriod);
+        if (period) {
+          setPrimaryPeriodData(period);
+        }
+      } catch (error) {
+        console.error('Error fetching period:', error);
+      }
+    };
+    
+    if (site.primaryPeriod) {
+      fetchPeriodData();
+    }
+  }, [site.primaryPeriod]);
+
   const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
   const isOpen = true; // TODO: Implementer åbningstider
-  const primaryPeriod = site.periods?.find(p => p.id === site.primaryPeriod);
 
   return (
     <motion.div 
@@ -103,11 +121,11 @@ export default function SiteCard({
                 </svg>
               </div>
             )}
-            {primaryPeriod && (
+            {primaryPeriodData && (
               <div 
                 className="absolute -left-1.5 -top-1.5 h-3.5 w-3.5 rounded-full border-2 border-white shadow-sm z-10"
-                style={{ backgroundColor: primaryPeriod.color }}
-                title={getLocalizedField(primaryPeriod.name, selectedLanguage)}
+                style={{ backgroundColor: primaryPeriodData.color }}
+                title={getLocalizedField(primaryPeriodData.name, selectedLanguage)}
               />
             )}
           </div>
