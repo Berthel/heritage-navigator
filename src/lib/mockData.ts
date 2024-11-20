@@ -1,6 +1,6 @@
 import { HeritageSite, Period, Image, OpeningHours, Tag, City } from '@/types/models';
 
-const mockPeriods: Period[] = [
+export const mockPeriods: Period[] = [
   {
     id: 'roman',
     name: {
@@ -54,7 +54,7 @@ const mockPeriods: Period[] = [
   }
 ];
 
-const mockImages: Image[] = [
+export const mockImages: Image[] = [
   {
     id: 'castle1',
     url: '/images/sites/castle.jpg',
@@ -125,7 +125,7 @@ const mockImages: Image[] = [
   }
 ];
 
-const mockTags: Tag[] = [
+export const mockTags: Tag[] = [
   {
     id: 'castle',
     name: {
@@ -146,7 +146,7 @@ const mockTags: Tag[] = [
   }
 ];
 
-const regularOpeningHours: OpeningHours = {
+export const regularOpeningHours: OpeningHours = {
   type: 'regular',
   slots: [
     { dayOfWeek: 1, opens: "09:00", closes: "17:00" },
@@ -157,7 +157,7 @@ const regularOpeningHours: OpeningHours = {
   ]
 };
 
-const summerOpeningHours: OpeningHours = {
+export const summerOpeningHours: OpeningHours = {
   type: 'seasonal',
   validFrom: '2023-06-01',
   validTo: '2023-09-30',
@@ -203,9 +203,9 @@ export const mockCities: City[] = [
     },
     defaultZoom: 15,
     primaryImage: 'tavira-aerial',  // Reference til et image ID
-    images: [],  // Ville normalt indeholde byens overordnede billeder
-    historicalPeriods: mockPeriods,
-    tags: [],
+    images: [],  // Array of image IDs
+    historicalPeriods: ['roman', 'islamic', 'medieval'],  // Array of period IDs
+    tags: [],  // Array of tag IDs
     status: 'active',
     lastUpdated: '2024-01-15T12:00:00Z'
   }
@@ -258,11 +258,11 @@ export const mockSites: HeritageSite[] = [
         pt: 'Escadas e terreno irregular. Não adequado para cadeiras de rodas.'
       }
     },
-    periods: [mockPeriods[2]], // Medieval
+    periods: ['medieval'], // Medieval
     primaryPeriod: 'medieval',
-    images: mockImages,
+    images: ['castle1'], // Castle images
     openingHours: [regularOpeningHours, summerOpeningHours],
-    tags: [mockTags[0]], // Castle tag
+    tags: ['castle'], // Castle tag
     status: 'active',
     lastUpdated: '2023-11-22T12:00:00Z'
   },
@@ -308,9 +308,9 @@ export const mockSites: HeritageSite[] = [
         pt: 'Facilmente acessível. Superfície plana.'
       }
     },
-    periods: [mockPeriods[0]], // Roman
+    periods: ['roman'], // Roman
     primaryPeriod: 'roman',
-    images: [mockImages[1]], // Roman bridge image
+    images: ['roman-bridge1'], // Roman bridge image
     openingHours: [
       {
         type: 'regular',
@@ -325,7 +325,7 @@ export const mockSites: HeritageSite[] = [
         ]
       }
     ],
-    tags: [],
+    tags: [], // No tags
     status: 'active',
     lastUpdated: '2023-11-22T12:00:00Z'
   },
@@ -375,11 +375,11 @@ export const mockSites: HeritageSite[] = [
         pt: 'Totalmente acessível com elevador e rampas'
       }
     },
-    periods: [mockPeriods[1]], // Islamic
+    periods: ['islamic'], // Islamic
     primaryPeriod: 'islamic',
-    images: [mockImages[2]],
+    images: ['islamic1'], // Islamic museum image
     openingHours: [regularOpeningHours],
-    tags: [mockTags[1]], // Museum tag
+    tags: ['museum'], // Museum tag
     status: 'active',
     lastUpdated: '2023-11-22T12:00:00Z'
   }

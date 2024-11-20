@@ -83,9 +83,9 @@ export interface City {
   };
   defaultZoom: number;
   primaryImage: string;
-  images: Image[];
-  historicalPeriods: Period[];  // De perioder der er relevante for denne by
-  tags: Tag[];                  // Tags der er specifikke for denne by
+  images: string[];           // Array of image IDs
+  historicalPeriods: string[];  // Array of period IDs
+  tags: string[];                  // Array of tag IDs
   status: 'active' | 'coming_soon' | 'inactive';
   lastUpdated: string;
 }
@@ -101,11 +101,11 @@ export interface HeritageSite {
     gallery?: string[];        // IDs på billeder til gallerivisning
   };
   location: Location;
-  periods: Period[];
+  periods: string[];  // Array of period IDs
   primaryPeriod: string;
-  images: Image[];           // Alle tilgængelige billeder
+  images: string[];           // Array of image IDs
   openingHours: OpeningHours[];
-  tags: Tag[];
+  tags: string[];
   status: 'active' | 'temporary_closed' | 'permanently_closed';
   lastUpdated: string;
   distance?: number;  // Distance in meters from user's location
