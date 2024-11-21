@@ -146,13 +146,21 @@ async function setupDatabase() {
       'city_periods',
       'city_images',
       'city_tags'
-    ];
+    ] as const;
 
     for (const table of relationTables) {
       const { error: relationError } = await supabase.from(table).select('*').limit(1);
       if (relationError) {
         console.log(`Creating ${table} table...`);
-        const { error } = await supabase.from(table).insert({}).select();
+        const defaultData = {
+          site_periods: { site_id: 'default', period_id: 'default' },
+          site_images: { site_id: 'default', image_id: 'default' },
+          site_tags: { site_id: 'default', tag_id: 'default' },
+          city_periods: { city_id: 'default', period_id: 'default' },
+          city_images: { city_id: 'default', image_id: 'default' },
+          city_tags: { city_id: 'default', tag_id: 'default' }
+        };
+        const { error } = await supabase.from(table).insert(defaultData[table]).select();
         if (error) throw error;
       } else {
         console.log(`✓ ${table} table verified`);

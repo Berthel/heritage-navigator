@@ -6,31 +6,34 @@ export interface LocalizedField {
 }
 
 // Definerer forskellige visningskontekster for billeder
-export type ImageContext = 'thumbnail' | 'gallery' | 'banner' | 'description';
+export type ImageContext = 'thumbnail' | 'gallery' | 'banner' | 'description' | string;
 
 export interface Image {
   id: string;
   url: string;
   alt: LocalizedField;
   caption?: LocalizedField;
-  credit?: string;
-  year?: number;
-  periodId?: string;
+  credit: string | null;
+  year: number | null;
+  periodId: string | null;
   order: number;
   contexts: ImageContext[];  // Hvilke kontekster billedet kan bruges i
   dimensions: {
     width: number;
     height: number;
   };
-  thumbnailUrl?: string;    // Optimeret version til thumbnails
-  mediumUrl?: string;       // Mellemstørrelse til gallerier
-  largeUrl?: string;        // Fuld størrelse til modaler/lightbox
+  thumbnailUrl: string | null;    // Optimeret version til thumbnails
+  mediumUrl: string | null;       // Mellemstørrelse til gallerier
+  largeUrl: string | null;        // Fuld størrelse til modaler/lightbox
 }
 
 // Tilføj reference til billeder i detaljeret info
 export interface DetailSection {
+  id: string;
   type: 'text' | 'image' | 'gallery';
-  content: string | string[] | LocalizedField;  // Text (kan være oversat), eller image IDs
+  title: LocalizedField;
+  content: LocalizedField;
+  order: number;
   imageLayout?: 'left' | 'right' | 'full';  // For enkeltbilleder
 }
 
@@ -67,7 +70,7 @@ export interface OpeningHours {
 export interface Tag {
   id: string;
   name: LocalizedField;
-  type?: string;
+  type: string | null;
 }
 export interface City {
   id: string;

@@ -95,48 +95,69 @@ export async function getCities(): Promise<City[]> {
 }
 
 // Get all heritage sites for a city
-export async function getHeritageSites(cityId: string): Promise<HeritageSite[]> {
-  console.log('Fetching heritage sites for city:', cityId);
-  
-  const { data: siteData, error: siteError } = await supabase
-    .from('heritage_sites')
-    .select(`
-      *,
-      images:heritage_site_images(image_id),
-      periods:heritage_site_periods(period_id),
-      tags:heritage_site_tags(tag_id),
-      opening_hours
-    `)
-    .eq('city_id', cityId)
-    .eq('status', 'active');
+export async function getHeritageSites(city: string): Promise<HeritageSite[]> {
+  try {
+    console.log('Fetching heritage sites for city:', city);
+    const { data, error } = await supabase
+      .from('heritage_sites')
+      .select(`
+        *,
+        images:site_images(
+          images(*)
+        ),
+        periods:site_periods(
+          periods(*)
+        ),
+        tags:site_tags(
+          tags(*)
+        ),
+        detail_sections(*)
+      `)
+      .eq('city_id', city);
 
-  if (siteError) throw siteError;
+    if (error) throw error;
 
-  return siteData.map(row => ({
-    id: row.id,
-    cityId: row.city_id,
-    name: convertRowToLocalizedField(row, 'name'),
-    description: convertRowToLocalizedField(row, 'description'),
-    location: {
-      latitude: row.latitude,
-      longitude: row.longitude
-    },
-    address: row.address,
-    thumbnailImage: row.thumbnail_image,
-    images: row.images?.map((img: any) => img.image_id) || [],
-    periods: row.periods?.map((p: any) => p.period_id) || [],
-    primaryPeriod: row.primary_period,
-    status: validateHeritageStatus(row.status),
-    lastUpdated: row.last_updated,
-    openingHours: row.opening_hours || [],
-    tags: row.tags?.map((t: any) => t.tag_id) || [],
-    sections: [],
-    gallery: [],
-    detailedInfo: {
-      sections: [],
-      gallery: []
-    }
-  }));
+    return data.map(row => ({
+      id: row.id,
+      cityId: row.city_id,
+      name: convertRowToLocalizedField(row, 'name'),
+      description: convertRowToLocalizedField(row, 'description'),
+      location: {
+        latitude: row.latitude,
+        longitude: row.longitude
+      },
+      address: row.address,
+      thumbnailImage: row.thumbnail_image,
+      images: row.images?.map((img: any) => img.images) || [],
+      periods: row.periods?.map((p: any) => p.periods) || [],
+      primaryPeriod: row.primary_period,
+      status: validateHeritageStatus(row.status),
+      lastUpdated: row.last_updated,
+      openingHours: [],
+      tags: row.tags?.map((t: any) => t.tags) || [],
+      sections: row.detail_sections?.map((section: any) => ({
+        id: section.id,
+        type: section.type || 'text',
+        title: convertRowToLocalizedField(section, 'title'),
+        content: convertRowToLocalizedField(section, 'content'),
+        order: section.order
+      })) || [],
+      gallery: [],
+      detailedInfo: {
+        sections: row.detail_sections?.map((section: any) => ({
+          id: section.id,
+          type: section.type || 'text',
+          title: convertRowToLocalizedField(section, 'title'),
+          content: convertRowToLocalizedField(section, 'content'),
+          order: section.order
+        })) || [],
+        gallery: []
+      }
+    }));
+  } catch (error) {
+    console.error('Error fetching heritage sites:', error);
+    throw error;
+  }
 }
 
 // Get all images
