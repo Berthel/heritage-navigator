@@ -1,0 +1,73 @@
+Database Schema:
+Fra Supabase Dashboard kan du eksportere database schema på denne måde:
+
+-- I Supabase SQL Editor, kør denne kommando:
+SELECT 
+    table_name,
+    column_name,
+    data_type,
+    column_default,
+    is_nullable
+FROM 
+    information_schema.columns
+WHERE 
+    table_schema = 'public'
+ORDER BY 
+    table_name, ordinal_position;
+
+
+
+Relations:
+For at se alle foreign key relationer:
+
+SELECT
+    tc.table_schema, 
+    tc.constraint_name, 
+    tc.table_name, 
+    kcu.column_name,
+    ccu.table_name AS foreign_table_name,
+    ccu.column_name AS foreign_column_name
+FROM 
+    information_schema.table_constraints AS tc 
+    JOIN information_schema.key_column_usage AS kcu
+      ON tc.constraint_name = kcu.constraint_name
+      AND tc.table_schema = kcu.table_schema
+    JOIN information_schema.constraint_column_usage AS ccu
+      ON ccu.constraint_name = tc.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY';
+
+
+
+-- Først, lad os se alle tabeller:
+SELECT 
+    tablename 
+FROM 
+    pg_tables 
+WHERE 
+    schemaname = 'public';
+
+giv det til claudet og spørg derefter  om at få lavet en forespørgsel til data eksport i dette format:
+SELECT json_build_object(
+    'cities', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM cities t),
+    'heritage_sites', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM heritage_sites t),
+    'periods', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM periods t),
+    'tags', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM tags t),
+    'images', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM images t),
+    'Image', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM "Image" t),
+    'site_images', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM site_images t),
+    'city_images', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM city_images t),
+    'HistoricalPeriod', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM "HistoricalPeriod" t),
+    'site_periods', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM site_periods t),
+    'city_periods', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM city_periods t),
+    'Site', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM "Site" t),
+    'detail_sections', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM detail_sections t),
+    'opening_hours', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM opening_hours t),
+    'time_slots', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM time_slots t),
+    'site_tags', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM site_tags t),
+    'city_tags', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM city_tags t),
+    'Tour', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM "Tour" t),
+    'Review', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM "Review" t),
+    'ToursOnSites', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM "ToursOnSites" t),
+    'Favorite', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM "Favorite" t),
+    'Translation', (SELECT coalesce(json_agg(row_to_json(t)), '[]') FROM "Translation" t)
+);
