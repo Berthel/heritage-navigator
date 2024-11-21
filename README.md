@@ -88,39 +88,8 @@ Hver migration er en SQL fil med format: YYYYMMDDHHMMSS_beskrivende_navn.sql
 Du kører aldrig direkte SQL mod databasen, alt går gennem migrations
 
 
-Workflow for Ændringer:
-
-# 1. Lav en ny migration fil
-supabase migration new navn_på_ændring
-
-# 2. Skriv dine SQL ændringer i den nye migrations fil
-
-# 3. Test lokalt
-supabase db reset  # Nulstiller lokal database og kører alle migrations
-
-# 4. Når det virker lokalt, push ændringer til produktion
-supabase db push   # Pusher nye migrations til produktions database
-
-Type Opdatering:
-# Efter database ændringer, generer nye types
-npm run update-types
-
-Git Workflow:
-# Commit både migrations og de genererede types
-git add supabase/migrations/YYYYMMDDHHMMSS_navn.sql
-git add types/supabase.ts
-git commit -m "feat: beskrivelse af database ændring"
-git push
-
-
-Så den komplette proces for en database ændring er:
-
-Lav migration fil
-Implementer ændringer i SQL
-Test lokalt
-Push til produktion
-Generer nye types
-Commit alt til Git
+## Workflow for Ændringer:
+Følg andvisningerne i dokumentet workflow-doc.md
 
 
 
