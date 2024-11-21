@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "setup-db": "ts-node scripts/setup-database.ts",
-    "import-mock-data": "ts-node scripts/import-mock-data.ts"
+    "import-mock-data": "ts-node scripts/import-mock-data.ts",
+    "update-types": "npx supabase gen types typescript --linked > types/supabase.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
