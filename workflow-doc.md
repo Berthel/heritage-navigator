@@ -59,6 +59,40 @@ git commit -m "feat: beskrivelse af database ændring"
 git push
 ```
 
+### 7. Database Backup Håndtering
+
+#### Automatiske Dumps
+```bash
+# Tag komplet backup af database struktur og data
+supabase db dump --file supabase/backups/full_backup_$(date +%Y%m%d).sql
+
+# Tag kun backup af data
+supabase db dump --data-only --file supabase/backups/data_backup_$(date +%Y%m%d).sql
+
+# Tag kun backup af schema
+supabase db dump --schema-only --file supabase/backups/schema_backup_$(date +%Y%m%d).sql
+```
+
+#### Backup Retention Policy
+- Behold daglige backups i 7 dage
+- Behold ugentlige backups i 4 uger
+- Behold månedlige backups i 6 måneder
+- Behold årlige backups permanent
+
+#### Backup Verifikation
+```bash
+# Test at backup kan gendannes
+supabase db reset  # Reset lokal database
+psql -h localhost -p 54322 -U postgres -d postgres -f supabase/backups/[backup_fil].sql
+```
+
+#### Backup Lokation
+- Alle database dumps gemmes i `supabase/backups/` mappen
+- Følg navngivnings konventionen: `[type]_backup_YYYYMMDD.sql`
+  - Eksempel: `full_backup_20241121.sql`
+  - Eksempel: `data_backup_20241121.sql`
+  - Eksempel: `schema_backup_20241121.sql`
+
 ## Komplet Proces Opsummering:
 1. Start/verificer lokal Supabase (`supabase start`)
 2. Lav migration fil
