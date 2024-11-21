@@ -9,18 +9,20 @@ import { HeritageSite, LocalizedField, City, Image, Period, DetailSection } from
 import { colors } from '@/styles/theme';
 import NextImage from 'next/image';
 import { PeriodBadge } from './PeriodBadge';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { getImages, getPeriods } from '@/lib/api';
 
 // Hjælpefunktion til at håndtere DetailSection content
 const getLocalizedContent = (content: DetailSection['content'], language: 'da' | 'en' | 'pt'): string => {
+  if (!content) return '';
   if (typeof content === 'string') {
     return content;
   } else if (Array.isArray(content)) {
     return content.join(', ');
-  } else {
-    return content[language];
+  } else if (typeof content === 'object' && content !== null) {
+    return content[language] || '';
   }
+  return '';
 };
 
 // Lokaliserede tekster
@@ -53,8 +55,8 @@ interface SiteDetailsProps {
   initialLanguage?: 'da' | 'en' | 'pt';
 }
 
-const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) => {
-  const [selectedLanguage, setSelectedLanguage] = useLanguage(initialLanguage);
+const SiteDetails = ({ site, city }: SiteDetailsProps) => {
+  const { language, setLanguage } = useLanguage();
   const [isFavorite, setIsFavorite] = useState(false);
   const [siteImages, setSiteImages] = useState<Image[]>([]);
   const [sitePeriods, setSitePeriods] = useState<Period[]>([]);
@@ -94,7 +96,7 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
     }
   }, [site.periods]);
 
-  const t = (key: keyof typeof translations) => translations[key][selectedLanguage];
+  const t = (key: keyof typeof translations) => translations[key][language];
 
   const mainImage = site.thumbnailImage ? siteImages.find(img => img.id === site.thumbnailImage) : null;
 
@@ -113,18 +115,18 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
 
   // Helper function to safely get alt text
   const getImageAlt = (image: Image) => {
-    if (!image.alt || !image.alt[selectedLanguage]) {
-      return site.name[selectedLanguage]; // Fallback to site name if no alt text
+    if (!image.alt || !image.alt[language]) {
+      return site.name[language]; // Fallback to site name if no alt text
     }
-    return image.alt[selectedLanguage];
+    return image.alt[language];
   };
 
   const handleShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: site.name[selectedLanguage],
-          text: site.description[selectedLanguage],
+          title: site.name[language],
+          text: site.description[language],
           url: window.location.href,
         });
       } catch (error) {
@@ -140,8 +142,8 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <AppHeader 
-        selectedLanguage={selectedLanguage}
-        onLanguageChange={setSelectedLanguage}
+        selectedLanguage={language}
+        onLanguageChange={setLanguage}
         city={city}
       />
 
@@ -190,12 +192,12 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-semibold">
-                {site.name[selectedLanguage]}
+                {site.name[language]}
               </h2>
               {sitePeriods.length > 0 && (
                 <PeriodBadge 
                   period={sitePeriods[0]} 
-                  selectedLanguage={selectedLanguage}
+                  selectedLanguage={language}
                   className="mt-1"
                 />
               )}
@@ -238,7 +240,7 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
                     className="whitespace-pre-line"
                     style={{ color: colors.text.muted }}
                   >
-                    {getLocalizedContent(detailText, selectedLanguage)}
+                    {getLocalizedContent(detailText, language)}
                   </p>
                 )}
                 {!detailText && (
@@ -246,7 +248,7 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
                     className="whitespace-pre-line"
                     style={{ color: colors.text.muted }}
                   >
-                    {site.description[selectedLanguage]}
+                    {site.description[language]}
                   </p>
                 )}
               </div>
@@ -303,26 +305,10 @@ const SiteDetails = ({ site, city, initialLanguage = 'da' }: SiteDetailsProps) =
               </button>
             </div>
           )}
-
-          {/* TODO: Add opening hours details */}
-          {/* TODO: Add accessibility information */}
         </div>
       </main>
-
-      <footer className="border-t bg-white p-4 safe-area-bottom">
-        <div className="flex justify-center items-center max-w-md mx-auto">
-          <Button 
-            variant="ghost"
-            onClick={handleShare}
-            style={{ color: colors.text.dark }}
-          >
-            <Share2 className="w-5 h-5 mr-2" />
-            <span className="text-sm">{t('shareLocation')}</span>
-          </Button>
-        </div>
-      </footer>
     </div>
   );
-}
+};
 
 export default SiteDetails;
