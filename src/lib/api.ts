@@ -10,6 +10,16 @@ function convertRowToLocalizedField(row: any, prefix: string) {
   };
 }
 
+// Validate city status
+function validateCityStatus(status: string): 'active' | 'coming_soon' | 'inactive' {
+  if (status === 'active' || status === 'coming_soon' || status === 'inactive') {
+    return status;
+  }
+  // Default to inactive if invalid status
+  console.warn(`Invalid city status: ${status}, defaulting to inactive`);
+  return 'inactive';
+}
+
 // Get all periods
 export async function getPeriods(): Promise<Period[]> {
   const { data, error } = await supabase
@@ -69,7 +79,7 @@ export async function getCities(): Promise<City[]> {
     images: row.images?.map((img: any) => img.image_id) || [],
     historicalPeriods: row.periods?.map((p: any) => p.period_id) || [],
     tags: row.tags?.map((t: any) => t.tag_id) || [],
-    status: row.status,
+    status: validateCityStatus(row.status),
     lastUpdated: row.last_updated
   }));
 }

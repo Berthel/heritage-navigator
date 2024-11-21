@@ -40,8 +40,8 @@ export interface Period {
   description: LocalizedField;
   order: number;
   color: string;
-  startYear?: number;  // Optional year (negative for BC)
-  endYear?: number;    // Optional year (negative for BC)
+  startYear: number | null;  // Changed from optional to nullable
+  endYear: number | null;    // Changed from optional to nullable
 }
 
 export interface Location {
@@ -69,13 +69,12 @@ export interface Tag {
   name: LocalizedField;
   type?: string;
 }
-
 export interface City {
   id: string;
   name: LocalizedField;
   description: LocalizedField;
   country: string;
-  region?: string;
+  region: string | null;  // Changed from optional to nullable
   location: Location;
   bounds: {
     northeast: Location;
@@ -83,13 +82,12 @@ export interface City {
   };
   defaultZoom: number;
   primaryImage: string;
-  images: string[];           // Array of image IDs
-  historicalPeriods: string[];  // Array of period IDs
-  tags: string[];                  // Array of tag IDs
+  images: string[];
+  historicalPeriods: string[];
+  tags: string[];
   status: 'active' | 'coming_soon' | 'inactive';
   lastUpdated: string;
 }
-
 export interface HeritageSite {
   id: string;
   cityId: string;           // Reference til byen
