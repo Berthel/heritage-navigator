@@ -32,12 +32,18 @@ function validateHeritageStatus(status: string): 'active' | 'temporary_closed' |
 
 // Get all periods
 export async function getPeriods(): Promise<Period[]> {
+  console.log('Fetching periods...');
   const { data, error } = await supabase
     .from('periods')
     .select('*')
     .order('order_number');
 
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching periods:', error);
+    throw error;
+  }
+
+  console.log('Received periods data:', data);
 
   return data.map(row => ({
     id: row.id,
@@ -106,7 +112,7 @@ export async function getHeritageSites(city: string): Promise<HeritageSite[]> {
           images(*)
         ),
         periods:site_periods(
-          periods(*)
+          period_id
         ),
         tags:site_tags(
           tags(*)
@@ -129,7 +135,7 @@ export async function getHeritageSites(city: string): Promise<HeritageSite[]> {
       address: row.address,
       thumbnailImage: row.thumbnail_image,
       images: row.images?.map((img: any) => img.images) || [],
-      periods: row.periods?.map((p: any) => p.periods) || [],
+      periods: row.periods?.map((p: any) => p.period_id) || [],
       primaryPeriod: row.primary_period,
       status: validateHeritageStatus(row.status),
       lastUpdated: row.last_updated,
