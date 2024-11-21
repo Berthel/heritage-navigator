@@ -86,7 +86,7 @@ export interface City {
   historicalPeriods: string[];
   tags: string[];
   status: 'active' | 'coming_soon' | 'inactive';
-  lastUpdated: string;
+  lastUpdated: string | null;  // Changed from string to string | null
 }
 export interface HeritageSite {
   id: string;
@@ -98,6 +98,8 @@ export interface HeritageSite {
     sections: DetailSection[];  // Struktureret indhold med tekst og billeder
     gallery?: string[];        // IDs på billeder til gallerivisning
   };
+  sections: DetailSection[];
+  gallery?: string[];
   location: Location;
   periods: string[];  // Array of period IDs
   primaryPeriod: string;
@@ -105,7 +107,7 @@ export interface HeritageSite {
   openingHours: OpeningHours[];
   tags: string[];
   status: 'active' | 'temporary_closed' | 'permanently_closed';
-  lastUpdated: string;
+  lastUpdated: string | null;
   distance?: number;  // Distance in meters from user's location
 }
 

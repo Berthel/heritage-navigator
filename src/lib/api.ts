@@ -20,6 +20,16 @@ function validateCityStatus(status: string): 'active' | 'coming_soon' | 'inactiv
   return 'inactive';
 }
 
+// Validate heritage site status
+function validateHeritageStatus(status: string): 'active' | 'temporary_closed' | 'permanently_closed' {
+  if (status === 'active' || status === 'temporary_closed' || status === 'permanently_closed') {
+    return status;
+  }
+  // Default to permanently_closed if invalid status
+  console.warn(`Invalid heritage site status: ${status}, defaulting to permanently_closed`);
+  return 'permanently_closed';
+}
+
 // Get all periods
 export async function getPeriods(): Promise<Period[]> {
   const { data, error } = await supabase
@@ -92,52 +102,19 @@ export async function getHeritageSites(cityId: string): Promise<HeritageSite[]> 
     .from('heritage_sites')
     .select(`
       *,
-      images:site_images(image_id),
-      periods:site_periods(period_id),
-      tags:site_tags(tag_id),
-      detail_sections(
-        id,
-        type,
-        content_da,
-        content_en,
-        content_pt,
-        order_number
-      )
+      images:heritage_site_images(image_id),
+      periods:heritage_site_periods(period_id),
+      tags:heritage_site_tags(tag_id),
+      opening_hours
     `)
     .eq('city_id', cityId)
     .eq('status', 'active');
 
-  if (siteError) {
-    console.error('Error fetching heritage sites:', siteError);
-    throw siteError;
-  }
-
-  console.log('Raw site data:', JSON.stringify(siteData, null, 2));
-
-  // Fetch all periods
-  console.log('Fetching periods...');
-  const { data: periodData, error: periodError } = await supabase
-    .from('periods')
-    .select('*');
-
-  if (periodError) throw periodError;
-
-  // Create a map of periods for easy lookup
-  const periodsMap = new Map(periodData.map(period => [
-    period.id,
-    {
-      id: period.id,
-      name: convertRowToLocalizedField(period, 'name'),
-      description: convertRowToLocalizedField(period, 'description'),
-      order: period.order_number,
-      color: period.color,
-      startYear: period.start_year,
-      endYear: period.end_year
-    }
-  ]));
+  if (siteError) throw siteError;
 
   return siteData.map(row => ({
     id: row.id,
+    cityId: row.city_id,
     name: convertRowToLocalizedField(row, 'name'),
     description: convertRowToLocalizedField(row, 'description'),
     location: {
@@ -147,35 +124,18 @@ export async function getHeritageSites(cityId: string): Promise<HeritageSite[]> 
     address: row.address,
     thumbnailImage: row.thumbnail_image,
     images: row.images?.map((img: any) => img.image_id) || [],
-    historicalPeriods: row.periods?.map((p: any) => p.period_id) || [],
-    periods: row.periods?.map((p: any) => periodsMap.get(p.period_id)) || [],
+    periods: row.periods?.map((p: any) => p.period_id) || [],
     primaryPeriod: row.primary_period,
-    tags: row.tags?.map((t: any) => t.tag_id) || [],
-    detailedInfo: {
-      sections: row.detail_sections?.map((section: any) => ({
-        id: section.id,
-        type: section.type,
-        content: {
-          da: section.content_da,
-          en: section.content_en,
-          pt: section.content_pt
-        }
-      })) || []
-    },
-    openingHours: row.opening_hours?.map((oh: any) => ({
-      id: oh.id,
-      type: oh.type,
-      validFrom: oh.valid_from,
-      validTo: oh.valid_to,
-      timeSlots: oh.time_slots?.map((ts: any) => ({
-        dayOfWeek: ts.day_of_week,
-        opens: ts.opens,
-        closes: ts.closes
-      })) || []
-    })) || [],
-    status: row.status,
+    status: validateHeritageStatus(row.status),
     lastUpdated: row.last_updated,
-    cityId: row.city_id
+    openingHours: row.opening_hours || [],
+    tags: row.tags?.map((t: any) => t.tag_id) || [],
+    sections: [],
+    gallery: [],
+    detailedInfo: {
+      sections: [],
+      gallery: []
+    }
   }));
 }
 
