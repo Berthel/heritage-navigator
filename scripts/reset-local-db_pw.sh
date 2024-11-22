@@ -78,8 +78,8 @@ supabase start || show_error "Could not start Supabase"
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
 # Create migration files
-SCHEMA_MIGRATION="${MIGRATIONS_DIR}/${TIMESTAMP}a_schema.sql"
-DATA_MIGRATION="${MIGRATIONS_DIR}/${TIMESTAMP}b_data.sql"
+SCHEMA_MIGRATION="${MIGRATIONS_DIR}/${TIMESTAMP}_a_schema.sql"
+DATA_MIGRATION="${MIGRATIONS_DIR}/${TIMESTAMP}_b_data.sql"
 
 # Dump production database
 show_status "Dumping production database..."
