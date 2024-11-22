@@ -2,9 +2,11 @@ import {
   LocalizedField,
   NextLocalizedField,
   SupportedLanguage,
+  Language,
   getLocalizedField,
   convertToNextLocalizedField,
   isValidLanguage,
+  isLanguage,
   getNextLocalizedField
 } from '../models';
 
@@ -13,6 +15,13 @@ describe('Language Types', () => {
     da: 'dansk',
     en: 'english',
     pt: 'português'
+  };
+
+  const validLanguage: Language = {
+    code: 'da',
+    name: 'Danish',
+    nativeName: 'Dansk',
+    active: true
   };
 
   describe('getLocalizedField', () => {
@@ -118,6 +127,71 @@ describe('Language Types', () => {
       };
       expect(getNextLocalizedField(numberField, 'da')).toBe(42);
       expect(getNextLocalizedField(numberField, 'fr' as SupportedLanguage, 'en')).toBe(123);
+    });
+  });
+
+  describe('isLanguage', () => {
+    it('should validate correct Language objects', () => {
+      const validLanguages: Language[] = [
+        {
+          code: 'da',
+          name: 'Danish',
+          nativeName: 'Dansk',
+          active: true
+        },
+        {
+          code: 'en',
+          name: 'English',
+          nativeName: 'English',
+          active: false
+        },
+        {
+          code: 'pt',
+          name: 'Portuguese',
+          nativeName: 'Português',
+          active: true
+        }
+      ];
+
+      validLanguages.forEach(lang => {
+        expect(isLanguage(lang)).toBe(true);
+      });
+    });
+
+    it('should reject invalid Language objects', () => {
+      const invalidLanguages = [
+        null,
+        undefined,
+        {},
+        { code: 'da' }, // Missing properties
+        { code: 'fr', name: 'French', nativeName: 'Français', active: true }, // Invalid code
+        { code: 'da', name: 42, nativeName: 'Dansk', active: true }, // Wrong type for name
+        { code: 'da', name: 'Danish', nativeName: true, active: true }, // Wrong type for nativeName
+        { code: 'da', name: 'Danish', nativeName: 'Dansk', active: 'yes' }, // Wrong type for active
+      ];
+
+      invalidLanguages.forEach(lang => {
+        expect(isLanguage(lang)).toBe(false);
+      });
+    });
+
+    it('should work as type guard in TypeScript', () => {
+      const unknownValue: any = {
+        code: 'da',
+        name: 'Danish',
+        nativeName: 'Dansk',
+        active: true
+      };
+
+      if (isLanguage(unknownValue)) {
+        // TypeScript should recognize unknownValue as Language here
+        expect(unknownValue.code).toBe('da');
+        expect(unknownValue.name).toBe('Danish');
+        expect(unknownValue.nativeName).toBe('Dansk');
+        expect(unknownValue.active).toBe(true);
+      } else {
+        fail('Should have recognized valid Language object');
+      }
     });
   });
 

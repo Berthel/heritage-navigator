@@ -14,6 +14,14 @@ export type NextLocalizedField<T = string> = {
   [key in SupportedLanguage]: T;
 };
 
+// Language interface til at beskrive sprog-konfiguration
+export interface Language {
+  code: SupportedLanguage;
+  name: string;
+  nativeName: string;
+  active: boolean;
+}
+
 // Hjælpefunktion til at konvertere mellem de to typer
 export function convertToNextLocalizedField<T>(field: LocalizedField & Record<string, T>): NextLocalizedField<T> {
   return {
@@ -26,6 +34,18 @@ export function convertToNextLocalizedField<T>(field: LocalizedField & Record<st
 // Type guard til validering af sprog koder
 export function isValidLanguage(code: string): code is SupportedLanguage {
   return ['da', 'en', 'pt'].includes(code);
+}
+
+// Type guard til validering af Language interface
+export function isLanguage(value: any): value is Language {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    isValidLanguage(value.code) &&
+    typeof value.name === 'string' &&
+    typeof value.nativeName === 'string' &&
+    typeof value.active === 'boolean'
+  );
 }
 
 // Ny hjælpefunktion til at hente værdier fra NextLocalizedField med fallback
@@ -104,6 +124,7 @@ export interface Tag {
   name: LocalizedField;
   type: string | null;
 }
+
 export interface City {
   id: string;
   name: LocalizedField;
@@ -123,6 +144,7 @@ export interface City {
   status: 'active' | 'coming_soon' | 'inactive';
   lastUpdated: string | null;  // Changed from string to string | null
 }
+
 export interface HeritageSite {
   id: string;
   cityId: string;           // Reference til byen
