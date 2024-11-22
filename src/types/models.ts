@@ -1,8 +1,26 @@
 // Basis types
+// Language types
+export type SupportedLanguage = 'da' | 'en' | 'pt';
+
+// Bevar den eksisterende LocalizedField (for backward compatibility)
 export interface LocalizedField {
   da: string;
   en: string;
   pt: string;
+}
+
+// Ny type for fremtidig brug
+export type NextLocalizedField<T = string> = {
+  [key in SupportedLanguage]: T;
+};
+
+// Hjælpefunktion til at konvertere mellem de to typer
+export function convertToNextLocalizedField<T>(field: LocalizedField & Record<string, T>): NextLocalizedField<T> {
+  return {
+    da: field.da,
+    en: field.en,
+    pt: field.pt
+  } as NextLocalizedField<T>;
 }
 
 // Definerer forskellige visningskontekster for billeder
@@ -116,9 +134,13 @@ export interface HeritageSite {
 
 // Hjælpefunktioner
 
-export function getLocalizedField(field: LocalizedField | undefined, language: string): string {
+// Opdateret hjælpefunktion til at håndtere begge field typer
+export function getLocalizedField(
+  field: LocalizedField | NextLocalizedField<string> | undefined, 
+  language: SupportedLanguage | string
+): string {
   if (!field) return '';
-  return field[language as keyof LocalizedField] || '';
+  return field[language as SupportedLanguage] || '';
 }
 
 // Hjælpefunktioner til billeder
