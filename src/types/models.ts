@@ -23,6 +23,20 @@ export function convertToNextLocalizedField<T>(field: LocalizedField & Record<st
   } as NextLocalizedField<T>;
 }
 
+// Type guard til validering af sprog koder
+export function isValidLanguage(code: string): code is SupportedLanguage {
+  return ['da', 'en', 'pt'].includes(code);
+}
+
+// Ny hjælpefunktion til at hente værdier fra NextLocalizedField med fallback
+export function getNextLocalizedField<T>(
+  field: NextLocalizedField<T>,
+  language: SupportedLanguage,
+  fallbackLanguage: SupportedLanguage = 'en'
+): T {
+  return field[language] || field[fallbackLanguage];
+}
+
 // Definerer forskellige visningskontekster for billeder
 export type ImageContext = 'thumbnail' | 'gallery' | 'banner' | 'description' | string;
 
