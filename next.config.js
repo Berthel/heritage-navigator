@@ -8,6 +8,16 @@ const withPWA = require('next-pwa')({
 
 const nextConfig = {
   reactStrictMode: true,
+  webpack: (config, { isServer }) => {
+    // Optimerer Supabase bundling
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@supabase/supabase-js': '@supabase/supabase-js/dist/umd/supabase.js',
+      }
+    }
+    return config
+  },
 }
 
 module.exports = withPWA(nextConfig)
