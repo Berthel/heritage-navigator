@@ -51,7 +51,7 @@ git stash
 
 # Pull latest from main
 show_status "Pulling latest changes from main..."
-git pull origin main
+# git pull origin main
 
 # Backup existing migrations
 show_status "Backing up existing migrations..."
