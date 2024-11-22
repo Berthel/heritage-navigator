@@ -27,6 +27,7 @@ This script will:
 4. Reset local database
 5. Import production schema and data
 6. Create new initial migration
+7. Generate updated TypeScript types
 
 **Important**: Verify your database after reset:
 ```bash
@@ -40,16 +41,7 @@ npm run test:db
 
 ### Incremental Development Process
 
-#### 1. Environment Preparation
-```bash
-# Sync with latest changes
-git pull
-supabase link --project-ref <project-ref>
-supabase db remote commit # Save remote state
-supabase db reset # Sync local database
-```
-
-#### 2. Development Process
+#### 1. Development Process
 ```bash
 # Create new migration
 supabase migration new descriptive_name
@@ -63,19 +55,14 @@ npm run test:db
 supabase db diff
 ```
 
-#### 3. Data Validation
+#### 2. Data Validation
 ```bash
 # Validate data structure
 supabase db test
 
-# Verify schema compatibility
-npm run validate-schema
 
-# Check automated ingestion compatibility
-npm run test:make-integration
-```
 
-#### 4. Production Deployment
+#### 3. Production Deployment
 ```bash
 # Pre-deployment backup
 supabase db dump --file backups/pre_deploy_$(date +%Y%m%d_%H%M%S).sql
@@ -101,6 +88,9 @@ psql -h localhost -p 54322 -U postgres -d postgres -c "DROP SCHEMA public CASCAD
 # Import to local
 psql -h localhost -p 54322 -U postgres -d postgres -f schema.sql
 psql -h localhost -p 54322 -U postgres -d postgres -f data.sql
+
+# Generate updated TypeScript types
+supabase gen types typescript --local > src/types/supabase.ts
 ```
 
 ### Known Challenges
@@ -116,6 +106,7 @@ psql -h localhost -p 54322 -U postgres -d postgres -f data.sql
 - Keep schema.sql and data.sql in .gitignore
 - Use reset-local-db.sh for complete resets
 - Make small, focused changes between synchronizations
+- Always regenerate TypeScript types after schema changes
 
 ## Backup Management
 
@@ -146,6 +137,9 @@ supabase db reset --version <previous_version>
 
 # Restore from backup
 psql -h localhost -p 54322 -U postgres -d postgres -f backups/[backup_file].sql
+
+# Regenerate types after restore
+supabase gen types typescript --local > src/types/supabase.ts
 ```
 
 ## CI/CD Integration
@@ -194,6 +188,7 @@ jobs:
 5. Production migration
 6. Backup verification
 7. Type checking
+8. Make.com webhook validation
 
 ## Quick Reference Commands
 
@@ -212,6 +207,9 @@ supabase db reset             # Reset to migrations state
 supabase db diff
 supabase db push
 supabase db dump
+
+# Type Generation
+supabase gen types typescript --local > src/types/supabase.ts
 
 # Development Tools
 supabase db test
@@ -232,4 +230,8 @@ npm run validate-schema
    - Type generation errors
    
 3. Data Verification
-   - Validat
+   - Validate schema structure
+   - Check foreign key constraints
+   - Verify data integrity
+   - Confirm type generation
+   - Test Make.com webhooks

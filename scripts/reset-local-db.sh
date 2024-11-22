@@ -64,6 +64,10 @@ show_status "Importerer schema og data..."
 psql -h localhost -p 54322 -U postgres -d postgres -f schema.sql
 psql -h localhost -p 54322 -U postgres -d postgres -f data.sql
 
+# Efter import af schema og data
+show_status "Genererer TypeScript types..."
+supabase gen types typescript --local > src/types/supabase.ts
+
 # Fjern gamle migrations
 show_status "Fjerner gamle migrations..."
 rm -rf supabase/migrations/*
