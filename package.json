@@ -44,3 +44,10 @@
     "ts-node": "^10.9.2"
   }
 }
+{
+  "scripts": {
+    "reset-db": "./scripts/reset-local-db.sh",
+    "dev-workflow": "./scripts/dev-workflow.sh",
+    "rollback": "./scripts/rollback.sh"
+  }
+}

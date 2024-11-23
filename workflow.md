@@ -31,79 +31,107 @@ npm run test:db
 supabase db diff
 ```
 
-### 2. Løbende Deployment Process (LOKALT MILJØ)
-For at fange og rette fejl tidligt bør du lave hyppige deployments til dit lokale miljø:
+### 2. Feature Branch Workflow
+For at holde udviklingen organiseret:
 
 ```bash
-# Gem dine ændringer i en ny migration
-supabase migration new descriptive_name
+# Opret ny feature branch
+git checkout -b feature/beskrivende-navn
+
+# Commit ofte med klare beskrivelser
+git add .
+git commit -m "feat: beskrivelse af ændring"
+
+# Push til GitHub
+git push origin feature/beskrivende-navn
+```
+
+### 3. Database Ændringer
+Når du laver ændringer i databasen:
+
+```bash
+# Opret ny migration
+supabase migration new add_beskrivende_navn
 
 # Test migrationen lokalt
-supabase db reset  # KUN LOKALT - nulstiller din lokale db
+supabase db reset
 npm run type-check
 npm run test:db
 
 # Verify ændringer
-supabase db diff  # Tjek at ændringerne er som forventet
+supabase db diff
 ```
 
-### 3. Production Deployment Process (KUN NÅR ALT ER TESTET)
+### 4. Production Deployment
 ⚠️ **ADVARSEL: Disse kommandoer påvirker production miljøet** ⚠️
 
-Før du deployer til production:
-1. Sørg for alle tests er grønne
-2. Lav en backup af production
-3. Hav en rollback plan klar
+Før deployment:
+1. Merge din feature branch til main
+2. Tag backup af production database
+3. Kør alle tests
+4. Deploy kun når alt er grønt
 
 ```bash
-# Tag backup før deployment
-supabase db dump --file backups/pre_deploy_$(date +%Y%m%d_%H%M%S).sql
+# Backup production database
+supabase db dump -f backups/pre_deploy_$(date +%Y%m%d_%H%M%S).sql
 
-# Deploy ændringer til production
-supabase db push  # ⚠️ DETTE PÅVIRKER PRODUCTION ⚠️
+# Deploy database ændringer
+supabase db push
 
-# Verificer deployment
-npm run verify-deployment
+# Deploy frontend (via GitHub/Netlify)
+git push origin main
 ```
 
 ## Quick Reference
 
-### Lokale Kommandoer (Sikre at bruge)
-- `./scripts/reset-local-db.sh` - Reset lokal database til production state
-- `supabase start` - Start lokal Supabase
-- `supabase status` - Tjek status
-- `supabase db reset` - Reset lokal database
-- `supabase db diff` - Se ændringer
-- `npm run type-check` - Verificer types
-- `npm run test:db` - Kør database tests
+### Lokale Kommandoer
+```bash
+./scripts/reset-local-db.sh  # Reset til production state
+supabase start              # Start lokal database
+supabase status            # Tjek services
+supabase db reset          # Reset lokal database
+supabase db diff           # Se ændringer
+npm run type-check         # Verificer types
+npm run test:db           # Kør database tests
+```
 
-### Production Kommandoer (Brug med forsigtighed)
-- `supabase db push` - ⚠️ Deploy til production
-- `supabase db dump` - ⚠️ Backup production
-- `npm run verify-deployment` - ⚠️ Tjek production deployment
+### Production Kommandoer
+```bash
+supabase db push          # ⚠️ Deploy til production
+supabase db dump         # ⚠️ Backup production
+```
 
 ## Best Practices
-1. Start altid en ny sprint med `reset-local-db.sh`
-2. Lav hyppige lokale deployments
-3. Test grundigt før production deployment
-4. Tag altid backup før production ændringer
-5. Dokumenter alle schema ændringer
-6. Hold øje med type errors
-7. Kør tests ofte
+1. Start altid ny sprint med `reset-local-db.sh`
+2. Arbejd i feature branches
+3. Commit ofte med beskrivende messages
+4. Test grundigt før production push
+5. Tag altid backup før deployment
+6. Hold øje med TypeScript errors
+7. Dokumenter schema ændringer
 
-## Common Issues & Solutions
-1. Hvis din lokale database er ude af sync:
-   ```bash
-   ./scripts/reset-local-db.sh
-   ```
+## Troubleshooting
 
-2. Hvis du har lavet ændringer du vil rulle tilbage:
-   ```bash
-   # LOKALT
-   supabase db reset
-   ```
+### Database ude af sync
+```bash
+./scripts/reset-local-db.sh
+```
 
-3. Type errors efter schema ændringer:
-   ```bash
-   supabase gen types typescript --local > src/types/supabase.ts
-   ```
+### Rulle ændringer tilbage lokalt
+```bash
+supabase db reset
+```
+
+### Type generation fejler
+```bash
+supabase gen types typescript --local > src/types/supabase.ts
+```
+
+### Database ændringer mangler
+```bash
+# Tjek diff
+supabase db diff
+
+# Se migrations status
+supabase migration list
+```

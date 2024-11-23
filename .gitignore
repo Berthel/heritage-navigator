@@ -41,3 +41,8 @@ next-env.d.ts
 # IDE files
 .idea
 .vscode
+
+# dumps ved dev reset
+supabase/dumps/
+supabase/migrations_backup/
+supabase/backups/
