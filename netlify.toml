@@ -1,23 +1,23 @@
 [build]
-  command = "npm run build"
+  command = "npm install && npm run build"
   publish = ".next"
 
 [context.production]
-  command = "npm run build"
+  command = "npm install && npm run build"
 
 [context.production.environment]
   NEXT_PUBLIC_ENVIRONMENT = "production"
   NODE_ENV = "production"
 
 [context.develop]
-  command = "npm run build:staging"
+  command = "npm install && npm run build:staging"
 
 [context.develop.environment]
   NEXT_PUBLIC_ENVIRONMENT = "staging"
   NODE_ENV = "production"
 
 [context.deploy-preview]
-  command = "npm run build:staging"
+  command = "npm install && npm run build:staging"
 
 [context.deploy-preview.environment]
   NEXT_PUBLIC_ENVIRONMENT = "staging"
@@ -26,6 +26,7 @@
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
   SECRETS_SCAN_ENABLED = "false"
+  NPM_FLAGS = "--legacy-peer-deps"
 
 [dev]
   command = "npm run dev"
