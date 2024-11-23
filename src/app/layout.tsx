@@ -34,12 +34,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Providers>
-      <LanguageProvider>
-        <div className={`${inter.className} min-h-screen bg-white`}>
-          {children}
-        </div>
-      </LanguageProvider>
-    </Providers>
+    <html lang="da" suppressHydrationWarning>
+      <body className={inter.className}>
+        <Providers>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </Providers>
+      </body>
+    </html>
   );
 }
