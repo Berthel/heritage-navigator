@@ -4,46 +4,39 @@
 
 [context.production]
   command = "npm run build"
-  environment = { 
-    NEXT_PUBLIC_ENVIRONMENT = "production",
-    NODE_ENV = "production"
-  }
+
+[context.production.environment]
+  NEXT_PUBLIC_ENVIRONMENT = "production"
+  NODE_ENV = "production"
 
 [context.develop]
   command = "npm run build:staging"
-  environment = { 
-    NEXT_PUBLIC_ENVIRONMENT = "staging",
-    NODE_ENV = "development"
-  }
+
+[context.develop.environment]
+  NEXT_PUBLIC_ENVIRONMENT = "staging"
+  NODE_ENV = "development"
 
 [context.deploy-preview]
   command = "npm run build:staging"
-  environment = { 
-    NEXT_PUBLIC_ENVIRONMENT = "staging",
-    NODE_ENV = "development"
-  }
+
+[context.deploy-preview.environment]
+  NEXT_PUBLIC_ENVIRONMENT = "staging"
+  NODE_ENV = "development"
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
   SECRETS_SCAN_ENABLED = "false"
 
-# Production-specific environment
-[context.production.environment]
-  SECRETS_SCAN_ENABLED = "true"
-
-# Netlify CLI development settings
 [dev]
   command = "npm run dev"
   port = 3000
   targetPort = 3000
 
-# Redirect for Next.js Image Optimization
 [[redirects]]
   from = "/_next/image*"
   to = "/.netlify/images"
   status = 200
 
-# Security headers
 [[headers]]
   for = "/*"
   [headers.values]
