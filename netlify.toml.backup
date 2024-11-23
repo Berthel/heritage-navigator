@@ -13,11 +13,3 @@
 [context.deploy-preview]
   command = "npm run build:staging"
   environment = { NEXT_PUBLIC_ENVIRONMENT = "staging" }
-
-[build.environment]
-  NEXT_TELEMETRY_DISABLED = "1"
-
-[dev]
-  command = "npm run dev"
-  port = 3000
-  targetPort = 3000

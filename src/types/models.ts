@@ -22,13 +22,17 @@ export interface Language {
   active: boolean;
 }
 
-// Hjælpefunktion til at konvertere mellem de to typer
-export function convertToNextLocalizedField<T>(field: LocalizedField & Record<string, T>): NextLocalizedField<T> {
+// Opdater denne funktion i models.ts:
+export function convertToNextLocalizedField<T>(field: {
+  da: T;
+  en: T;
+  pt: T;
+}): NextLocalizedField<T> {
   return {
     da: field.da,
     en: field.en,
     pt: field.pt
-  } as NextLocalizedField<T>;
+  };
 }
 
 // Type guard til validering af sprog koder

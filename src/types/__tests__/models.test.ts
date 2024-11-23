@@ -49,17 +49,17 @@ describe('Language Types', () => {
     });
 
     it('should handle generic types', () => {
-      const numberField: LocalizedField & Record<string, number> = {
+      const numberField = {
         da: 42,
         en: 123,
         pt: 7
       };
-      const next = convertToNextLocalizedField(numberField);
+      const next = convertToNextLocalizedField<number>(numberField);
       expect(next.da).toBe(42);
       expect(next.en).toBe(123);
       expect(next.pt).toBe(7);
     });
-  });
+});
 
   describe('isValidLanguage', () => {
     it('should validate supported languages', () => {

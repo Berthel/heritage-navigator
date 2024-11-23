@@ -18,14 +18,7 @@
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
     "test": "jest",
-    "test:db": "jest --testPathPattern=tests/db",
-    "prebuild": "npm run type-check",
-    "test:ci": "jest --ci --passWithNoTests",  
-    "db:backup": "mkdir -p backups && supabase db dump -f backups/backup_$(date +%Y%m%d_%H%M%S).sql",
-    "db:push": "npm run db:backup && supabase db push",
-    "validate": "npm run type-check && npm run test:ci"
-
-    
+    "test:db": "jest --testPathPattern=tests/db"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
