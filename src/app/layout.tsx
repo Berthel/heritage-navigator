@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import 'leaflet/dist/leaflet.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -39,11 +40,13 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/heritage-compass.svg" />
       </head>
       <body className={inter.className}>
-        <LanguageProvider>
-          <main className="min-h-screen bg-white">
-            {children}
-          </main>
-        </LanguageProvider>
+        <Providers>
+          <LanguageProvider>
+            <main className="min-h-screen bg-white">
+              {children}
+            </main>
+          </LanguageProvider>
+        </Providers>
       </body>
     </html>
   );
