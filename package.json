@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:staging": "NEXT_PUBLIC_ENVIRONMENT=staging next build",
+    "build:staging": "next build",
     "start": "next start",
     "lint": "next lint",
     "import-mock-data": "ts-node scripts/import-mock-data.ts",

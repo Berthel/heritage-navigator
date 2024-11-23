@@ -8,8 +8,6 @@
 [context.production.environment]
   NEXT_PUBLIC_ENVIRONMENT = "production"
   NODE_ENV = "production"
-  NEXT_PUBLIC_SUPABASE_URL = "${NEXT_PUBLIC_SUPABASE_URL}"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "${NEXT_PUBLIC_SUPABASE_ANON_KEY}"
 
 [context.develop]
   command = "npm install && npm run build:staging"
@@ -17,8 +15,6 @@
 [context.develop.environment]
   NEXT_PUBLIC_ENVIRONMENT = "staging"
   NODE_ENV = "production"
-  NEXT_PUBLIC_SUPABASE_URL = "${NEXT_PUBLIC_SUPABASE_URL}"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "${NEXT_PUBLIC_SUPABASE_ANON_KEY}"
 
 [context.deploy-preview]
   command = "npm install && npm run build:staging"
@@ -27,26 +23,16 @@
   NEXT_PUBLIC_ENVIRONMENT = "staging"
   NODE_ENV = "production"
 
-[build.environment]
-  NEXT_TELEMETRY_DISABLED = "1"
-  SECRETS_SCAN_ENABLED = "false"
-  NPM_FLAGS = "--legacy-peer-deps"
-
-[dev]
-  command = "npm run dev"
-  port = 3000
-  targetPort = 3000
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
 
 [[redirects]]
   from = "/_next/image*"
   to = "/.netlify/images"
   status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co"

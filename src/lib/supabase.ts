@@ -1,18 +1,23 @@
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '../../types/supabase'
+import config, { validateConfig } from '../config/environment'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Validate environment variables before creating client
+validateConfig()
 
 // Debug logging
-console.log('Environment:', process.env.NEXT_PUBLIC_ENVIRONMENT)
-console.log('Supabase URL exists:', !!supabaseUrl)
-console.log('Supabase Key exists:', !!supabaseAnonKey)
+console.log('Environment:', config.environment)
+console.log('Supabase URL exists:', !!config.supabaseUrl)
+console.log('Supabase Key exists:', !!config.supabaseAnonKey)
+
+if (!config.supabaseUrl || !config.supabaseAnonKey) {
+  throw new Error('Missing required Supabase configuration')
+}
 
 // Create a single supabase client for interacting with your database
 export const supabase = createClient<Database>(
-  supabaseUrl,
-  supabaseAnonKey
+  config.supabaseUrl,
+  config.supabaseAnonKey
 )
 
 // Helper type for table rows
