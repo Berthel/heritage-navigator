@@ -1,5 +1,7 @@
 'use client'
  
+import { useLanguage } from '@/contexts/LanguageContext'
+
 export default function Error({
   error,
   reset,
@@ -7,16 +9,38 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const { language } = useLanguage()
+  
+  const texts = {
+    da: {
+      title: 'Der opstod en fejl',
+      description: 'Beklager, noget gik galt.',
+      retry: 'Prøv igen'
+    },
+    en: {
+      title: 'Something went wrong',
+      description: 'Sorry, an error occurred.',
+      retry: 'Try again'
+    },
+    pt: {
+      title: 'Algo deu errado',
+      description: 'Desculpe, ocorreu um erro.',
+      retry: 'Tente novamente'
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-4">Der opstod en fejl</h2>
-        <p className="mb-4">Beklager, noget gik galt.</p>
+        <h2 className="text-2xl font-bold mb-4">{texts[language].title}</h2>
+        <p className="mb-6 text-muted-foreground">
+          {texts[language].description}
+        </p>
         <button
           onClick={() => reset()}
-          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+          className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
-          Prøv igen
+          {texts[language].retry}
         </button>
       </div>
     </div>
