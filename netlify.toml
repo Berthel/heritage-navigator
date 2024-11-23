@@ -2,6 +2,10 @@
   command = "npm install && npm run build"
   publish = ".next"
 
+[build.environment]
+  SECRETS_SCAN_ENABLED = "false"
+  skip_processing = true
+
 [context.production]
   command = "npm install && npm run build"
 
@@ -20,6 +24,13 @@
   command = "npm install && npm run build:staging"
 
 [context.deploy-preview.environment]
+  NEXT_PUBLIC_ENVIRONMENT = "staging"
+  NODE_ENV = "production"
+
+[context.branch-deploy]
+  command = "npm install && npm run build:staging"
+
+[context.branch-deploy.environment]
   NEXT_PUBLIC_ENVIRONMENT = "staging"
   NODE_ENV = "production"
 
