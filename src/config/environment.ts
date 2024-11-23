@@ -71,45 +71,29 @@ const parseSupportedLanguages = (): SupportedLanguage[] => {
   }
 };
 
-export const config: EnvironmentConfig = {
-  environment: getEnvironment(),
-  isProduction: getEnvironment() === 'production',
-  isDevelopment: getEnvironment() === 'development',
-  isStaging: getEnvironment() === 'staging',
-  isPreview: getEnvironment() === 'preview',
-  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-
-  localization: {
-    defaultLanguage: (process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE as SupportedLanguage) || 'en',
-    supportedLanguages: parseSupportedLanguages(),
-  },
-
-  maps: {
-    defaultCenter: parseMapCenter(),
-    defaultZoom: Number(process.env.NEXT_PUBLIC_MAP_DEFAULT_ZOOM) || 15,
-  },
-
-  features: {
-    enableMaps: process.env.NEXT_PUBLIC_ENABLE_MAPS === 'true',
-    enableOfflineMode: process.env.NEXT_PUBLIC_ENABLE_OFFLINE_MODE === 'true',
-    enableDebug: process.env.NEXT_PUBLIC_ENABLE_DEBUG === 'true',
-    apiMocking: process.env.NEXT_PUBLIC_API_MOCKING === 'true',
-  },
-
-  defaultCity: process.env.NEXT_PUBLIC_DEFAULT_CITY || 'tavira',
-  cacheDuration: Number(process.env.NEXT_PUBLIC_CACHE_DURATION) || 3600,
-};
-
+// Validate environment variables first
 export const validateConfig = () => {
+  console.log('Starting environment validation...');
+  
   const requiredEnvVars = [
     'NEXT_PUBLIC_SUPABASE_URL', 
     'NEXT_PUBLIC_SUPABASE_ANON_KEY',
     'NEXT_PUBLIC_ENVIRONMENT'
   ];
   
-  const missing = requiredEnvVars.filter(envVar => !process.env[envVar]);
+  console.log('All process.env keys:', Object.keys(process.env));
+  
+  console.log('Required variables values:', {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_ENVIRONMENT: process.env.NEXT_PUBLIC_ENVIRONMENT
+  });
+  
+  const missing = requiredEnvVars.filter(envVar => {
+    const value = process.env[envVar];
+    console.log(`Checking ${envVar}:`, { value, exists: !!value });
+    return !value;
+  });
   
   if (missing.length > 0) {
     throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
@@ -122,6 +106,44 @@ export const validateConfig = () => {
       throw new Error('Invalid map center format. Expected format: lat,lng');
     }
   }
+};
+
+// Run validation only on server side
+if (typeof window === 'undefined') {
+  validateConfig();
+}
+
+// Then create the config object
+export const config: EnvironmentConfig = {
+  environment: getEnvironment(),
+  isProduction: getEnvironment() === 'production',
+  isDevelopment: getEnvironment() === 'development',
+  isStaging: getEnvironment() === 'staging',
+  isPreview: getEnvironment() === 'preview',
+  
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+
+  localization: {
+    defaultLanguage: process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE as SupportedLanguage || 'en',
+    supportedLanguages: parseSupportedLanguages(),
+  },
+
+  maps: {
+    defaultCenter: parseMapCenter(),
+    defaultZoom: Number(process.env.NEXT_PUBLIC_MAP_DEFAULT_ZOOM) || 15,
+  },
+
+  features: {
+    enableMaps: process.env.NEXT_PUBLIC_ENABLE_MAPS === 'true',
+    enableOfflineMode: process.env.NEXT_PUBLIC_ENABLE_OFFLINE_MODE === 'true',
+    enableDebug: process.env.NODE_ENV === 'development',
+    apiMocking: process.env.NEXT_PUBLIC_API_MOCKING === 'true',
+  },
+
+  defaultCity: process.env.NEXT_PUBLIC_DEFAULT_CITY || 'tavira',
+  cacheDuration: Number(process.env.NEXT_PUBLIC_CACHE_DURATION) || 3600,
 };
 
 export const isValidEnvironment = (env: string): env is Environment => {
