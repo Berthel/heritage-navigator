@@ -24,14 +24,13 @@
     "db:backup": "mkdir -p backups && supabase db dump -f backups/backup_$(date +%Y%m%d_%H%M%S).sql",
     "db:push": "npm run db:backup && supabase db push",
     "validate": "npm run type-check && npm run test:ci"
-
-    
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
     "@shadcn/ui": "^0.0.4",
     "@supabase/supabase-js": "^2.46.1",
     "@types/leaflet": "^1.9.14",
+    "autoprefixer": "^10.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.17",
@@ -41,10 +40,12 @@
     "next-intl": "3.5.4",
     "next-pwa": "5.6.0",
     "next-themes": "^0.4.3",
+    "postcss": "^8",
     "react": "^18",
     "react-dom": "^18",
     "react-leaflet": "^4.2.1",
     "tailwind-merge": "^2.5.4",
+    "tailwindcss": "^3.3.0",
     "typescript": "^5"
   },
   "devDependencies": {
@@ -53,14 +54,11 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "autoprefixer": "^10.0.1",
     "dotenv": "^16.4.5",
     "eslint": "^8",
     "eslint-config-next": "14.0.3",
     "jest": "^29.5.0",
-    "postcss": "^8",
     "supabase": "^1.223.10",
-    "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2"
   }
 }
