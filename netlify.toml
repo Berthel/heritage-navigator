@@ -14,14 +14,14 @@
 
 [context.develop.environment]
   NEXT_PUBLIC_ENVIRONMENT = "staging"
-  NODE_ENV = "development"
+  NODE_ENV = "production"
 
 [context.deploy-preview]
   command = "npm run build:staging"
 
 [context.deploy-preview.environment]
   NEXT_PUBLIC_ENVIRONMENT = "staging"
-  NODE_ENV = "development"
+  NODE_ENV = "production"
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"

@@ -11,18 +11,15 @@ interface LanguageContextType {
 
 const defaultLanguage: SupportedLanguage = 'da';
 
-// Provide a more descriptive error message if the context is used outside a provider
-const LanguageContext = createContext<LanguageContextType>({
-  language: defaultLanguage,
-  setLanguage: () => {},
-  isReady: false
-});
+const LanguageContext = createContext<LanguageContextType | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<SupportedLanguage>(defaultLanguage);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const stored = localStorage.getItem('heritage-navigator-language');
     if (stored && ['da', 'en', 'pt'].includes(stored)) {
       setLanguage(stored as SupportedLanguage);
@@ -53,7 +50,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    return {
+      language: defaultLanguage,
+      setLanguage: () => {},
+      isReady: false
+    };
   }
   return context;
 }
