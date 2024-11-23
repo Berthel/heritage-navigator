@@ -6,33 +6,41 @@ import type { SupportedLanguage } from '@/types/models';
 interface LanguageContextType {
   language: SupportedLanguage;
   setLanguage: (lang: SupportedLanguage) => void;
+  isReady: boolean;
 }
 
+const defaultLanguage: SupportedLanguage = 'da';
+
 // Provide a more descriptive error message if the context is used outside a provider
-const LanguageContext = createContext<LanguageContextType | null>(null);
+const LanguageContext = createContext<LanguageContextType>({
+  language: defaultLanguage,
+  setLanguage: () => {},
+  isReady: false
+});
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<SupportedLanguage>('da');
-  const [mounted, setMounted] = useState(false);
+  const [language, setLanguage] = useState<SupportedLanguage>(defaultLanguage);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const stored = localStorage.getItem('heritage-navigator-language');
     if (stored && ['da', 'en', 'pt'].includes(stored)) {
       setLanguage(stored as SupportedLanguage);
     }
+    setIsReady(true);
   }, []);
 
   const handleSetLanguage = (lang: SupportedLanguage) => {
     setLanguage(lang);
-    if (mounted) {
+    if (typeof window !== 'undefined') {
       localStorage.setItem('heritage-navigator-language', lang);
     }
   };
 
   const value = {
     language,
-    setLanguage: handleSetLanguage
+    setLanguage: handleSetLanguage,
+    isReady
   };
 
   return (
@@ -44,7 +52,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext);
-  if (context === null) {
+  if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
