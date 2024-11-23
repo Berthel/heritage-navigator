@@ -1,6 +1,7 @@
 Database Schema:
 Fra Supabase Dashboard kan du eksportere database schema på denne måde:
 
+
 -- I Supabase SQL Editor, kør denne kommando:
 SELECT 
     table_name,
