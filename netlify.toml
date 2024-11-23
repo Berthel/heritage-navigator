@@ -4,20 +4,12 @@
 
 [build.environment]
   SECRETS_SCAN_ENABLED = "false"
-  skip_processing = true
 
 [context.production]
   command = "npm install && npm run build"
 
 [context.production.environment]
   NEXT_PUBLIC_ENVIRONMENT = "production"
-  NODE_ENV = "production"
-
-[context.develop]
-  command = "npm install && npm run build:staging"
-
-[context.develop.environment]
-  NEXT_PUBLIC_ENVIRONMENT = "staging"
   NODE_ENV = "production"
 
 [context.deploy-preview]
