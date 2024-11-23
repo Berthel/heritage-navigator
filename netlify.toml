@@ -1,0 +1,35 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NEXT_PUBLIC_SITE_URL = "https://heritage-navigator.com"
+  NODE_VERSION = "20"
+
+# Production context (main branch)
+[context.production]
+  command = "npm run build"
+  [context.production.environment]
+    NEXT_PUBLIC_ENVIRONMENT = "production"
+
+# Staging context (develop branch)
+[context.develop]
+  command = "npm run build:staging"
+  [context.develop.environment]
+    NEXT_PUBLIC_ENVIRONMENT = "staging"
+    NEXT_PUBLIC_SITE_URL = "https://develop--heritage-navigator.netlify.app"
+
+# Deploy preview context (PRs)
+[context.deploy-preview]
+  command = "npm run build:staging"
+  [context.deploy-preview.environment]
+    NEXT_PUBLIC_ENVIRONMENT = "preview"
+
+# Branch deploy context (all other branches)
+[context.branch-deploy]
+  command = "npm run build:staging"
+  [context.branch-deploy.environment]
+    NEXT_PUBLIC_ENVIRONMENT = "development"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
