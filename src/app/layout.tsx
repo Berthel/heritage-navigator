@@ -34,20 +34,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="da" className="light">
-      <head>
-        <link rel="icon" href="/heritage-compass.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/heritage-compass.svg" />
-      </head>
-      <body className={inter.className}>
-        <Providers>
-          <LanguageProvider>
-            <main className="min-h-screen bg-white">
-              {children}
-            </main>
-          </LanguageProvider>
-        </Providers>
-      </body>
-    </html>
+    <Providers>
+      <LanguageProvider>
+        <div className={`${inter.className} min-h-screen bg-white`}>
+          {children}
+        </div>
+      </LanguageProvider>
+    </Providers>
   );
 }

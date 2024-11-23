@@ -9,7 +9,15 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  const { language } = useLanguage()
+  let language: 'da' | 'en' | 'pt' = 'da';
+  
+  try {
+    const context = useLanguage();
+    language = context.language;
+  } catch (e) {
+    // Fallback til dansk hvis konteksten ikke er tilgængelig
+    language = 'da';
+  }
   
   const texts = {
     da: {
