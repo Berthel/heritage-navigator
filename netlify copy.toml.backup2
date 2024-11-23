@@ -1,0 +1,23 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[context.production]
+  command = "npm run build"
+  environment = { NEXT_PUBLIC_ENVIRONMENT = "production" }
+
+[context.develop]
+  command = "npm run build:staging"
+  environment = { NEXT_PUBLIC_ENVIRONMENT = "staging" }
+
+[context.deploy-preview]
+  command = "npm run build:staging"
+  environment = { NEXT_PUBLIC_ENVIRONMENT = "staging" }
+
+[build.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[dev]
+  command = "npm run dev"
+  port = 3000
+  targetPort = 3000
